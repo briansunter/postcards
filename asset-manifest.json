@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/postcards/static/css/main.814f1d2c.chunk.css",
+    "main.js": "/postcards/static/js/main.903fd99f.chunk.js",
+    "main.js.map": "/postcards/static/js/main.903fd99f.chunk.js.map",
+    "runtime-main.js": "/postcards/static/js/runtime-main.655adb5d.js",
+    "runtime-main.js.map": "/postcards/static/js/runtime-main.655adb5d.js.map",
+    "static/js/2.d73f5999.chunk.js": "/postcards/static/js/2.d73f5999.chunk.js",
+    "static/js/2.d73f5999.chunk.js.map": "/postcards/static/js/2.d73f5999.chunk.js.map",
+    "index.html": "/postcards/index.html",
+    "precache-manifest.de02ff960ac6c0282ae0870650760d27.js": "/postcards/precache-manifest.de02ff960ac6c0282ae0870650760d27.js",
+    "service-worker.js": "/postcards/service-worker.js",
+    "static/css/main.814f1d2c.chunk.css.map": "/postcards/static/css/main.814f1d2c.chunk.css.map",
+    "static/js/2.d73f5999.chunk.js.LICENSE.txt": "/postcards/static/js/2.d73f5999.chunk.js.LICENSE.txt",
+    "static/media/logo.svg": "/postcards/static/media/logo.5d5d9eef.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.655adb5d.js",
+    "static/js/2.d73f5999.chunk.js",
+    "static/css/main.814f1d2c.chunk.css",
+    "static/js/main.903fd99f.chunk.js"
+  ]
+}
