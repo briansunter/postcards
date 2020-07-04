@@ -10,10 +10,10 @@ function App() {
 
   const frontImage = urlParams.get("front_image");
   const stampImage = urlParams.get("stamp_image");
-  const message = atob(urlParams.get("message") || "");
-  const name = atob(urlParams.get("name") || "");
-  const street = atob(urlParams.get("street") || "");
-  const state = atob(urlParams.get("state") || "");
+  const message = atob(urlParams.get("message") || "") || "";
+  const to = atob(urlParams.get("to") || "");
+  const recipientAddress = atob(urlParams.get("recipientAddress") || "");
+  const from = atob(urlParams.get("from") || "");
   const [flip, setFlip] = useState(true);
 
   const defaultStamp = "https://i.imgur.com/ktLaE2K.jpeg";
@@ -53,21 +53,14 @@ function App() {
                   >
                     <TileLayer
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                      attribution=""
                     />
-                    <Marker position={position}>
-                      <Popup>
-                        A pretty CSS3 popup.
-                        <br />
-                        Easily customizable.
-                      </Popup>
-                    </Marker>
                   </Map>
                 </div>
                 <div className="addressBox">
-                  <p className="address">{name} </p>
-                  <p className="address"> {street} </p>
-                  <p className="address"> {state} </p>
+                  <p className="address">{to} </p>
+                  <p className="address"> {from} </p>
+                  <p className="address"> {recipientAddress} </p>
                 </div>
               </div>
             </div>
