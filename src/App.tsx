@@ -11,11 +11,10 @@ function App() {
   const name = atob(urlParams.get("name") || "");
   const street = atob(urlParams.get("street") || "");
   const state = atob(urlParams.get("state") || "");
-  const [flip, setFlip] = useState(false);
+  const [flip, setFlip] = useState(true);
 
   const defaultStamp = "https://i.imgur.com/ktLaE2K.jpeg";
-  const defaultFront = "https://i.imgur.com/YMP3MRq.jpg";
-
+  const defaultFront = "https://i.imgur.com/TOpuoX2.jpg";
   return (
     <div className="App" data-testid="home">
       <div className="post-card">
