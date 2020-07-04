@@ -33,7 +33,7 @@ function App() {
     message = "This is the internet version of sending a postcard home. Use this to send and recieve unique flippable postcards.",
     to = "Someone Special",
     address = "San Francisco, CA",
-    sender = "Bob Ross",
+    sender = "Brian Sunter",
   } = urlData;
 
   const [flip, setFlip] = useState(true);
