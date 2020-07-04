@@ -7,18 +7,39 @@ import "./App.css";
 
 function App() {
   const urlParams = new URLSearchParams(window.location.search);
+  const urlDataString = atob(urlParams.get("card") || "");
+  interface URLData {
+    frontImage?: string;
+    latitude?: number;
+    longitude?: number;
+    message?: string;
+    to?: string;
+    address?: string;
+    sender?: string;
+  }
 
-  const frontImage = urlParams.get("front_image");
-  const stampImage = urlParams.get("stamp_image");
-  const message = atob(urlParams.get("message") || "") || "";
-  const to = atob(urlParams.get("to") || "");
-  const recipientAddress = atob(urlParams.get("recipientAddress") || "");
-  const from = atob(urlParams.get("from") || "");
+  let urlData: URLData = {};
+  const f = urlData.frontImage;
+
+  try {
+    urlData = JSON.parse(urlDataString);
+  } catch (e) {
+    console.log("could not parse data", e);
+  }
+
+  const {
+    frontImage = "https://i.imgur.com/TOpuoX2.jpg",
+    latitude = 28.665,
+    longitude = -82.1129,
+    message = "This is the internet version of sending a postcard home. Use this to send and recieve unique flippable postcards.",
+    to = "Someone Special",
+    address = "San Francisco, CA",
+    sender = "Bob Ross",
+  } = urlData;
+
   const [flip, setFlip] = useState(true);
 
-  const defaultStamp = "https://i.imgur.com/ktLaE2K.jpeg";
-  const defaultFront = "https://i.imgur.com/TOpuoX2.jpg";
-  const position: LatLngTuple = [28.665, -82.1129];
+  const position: LatLngTuple = [latitude, longitude];
 
   return (
     <div className="App" data-testid="home">
@@ -31,11 +52,7 @@ function App() {
             }`}
           >
             <div className="flip-card-front">
-              <img
-                className="front-img"
-                src={frontImage || defaultFront}
-                alt="Avatar"
-              />
+              <img className="front-img" src={frontImage} alt="Avatar" />
             </div>
             <div className="flip-card-back">
               <div className="left-content">
@@ -58,9 +75,9 @@ function App() {
                   </Map>
                 </div>
                 <div className="addressBox">
-                  <p className="address">{to} </p>
-                  <p className="address"> {from} </p>
-                  <p className="address"> {recipientAddress} </p>
+                  <p className="address">TO: {to} </p>
+                  <p className="address"> {address} </p>
+                  <p className="address">FROM: {sender} </p>
                 </div>
               </div>
             </div>
