@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { Map, Marker, Popup, TileLayer } from "react-leaflet";
+import { LatLngTuple } from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 import "./App.css";
 
@@ -15,6 +18,8 @@ function App() {
 
   const defaultStamp = "https://i.imgur.com/ktLaE2K.jpeg";
   const defaultFront = "https://i.imgur.com/TOpuoX2.jpg";
+  const position: LatLngTuple = [28.665, -82.1129];
+
   return (
     <div className="App" data-testid="home">
       <div className="post-card">
@@ -38,11 +43,26 @@ function App() {
               </div>
               <div className="right-content">
                 <div className="stamp-container">
-                  <img
+                  <Map
                     className="stamp"
-                    src={stampImage || defaultStamp}
-                    alt="Avatar"
-                  />
+                    id="mapId"
+                    center={position}
+                    zoom={9}
+                    attributionControl={false}
+                    zoomControl={false}
+                  >
+                    <TileLayer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                    <Marker position={position}>
+                      <Popup>
+                        A pretty CSS3 popup.
+                        <br />
+                        Easily customizable.
+                      </Popup>
+                    </Marker>
+                  </Map>
                 </div>
                 <div className="addressBox">
                   <p className="address">{name} </p>

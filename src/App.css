@@ -1,6 +1,13 @@
+.App {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
 .post-card{
-    width: 60vmax;
-    height: 40vmax;
+    height: 40vw;
+    width: 60vw;
+    margin: 4vw;
 }
 .flip-card {
   background-color: transparent;
@@ -17,6 +24,7 @@
   text-align: center;
   transition: transform 0.8s;
   transform-style: preserve-3d;
+  box-shadow: 0 16px 32px 0 rgba(0,0,0,0.4);
 }
 
 .flip-card-toggle-on {
@@ -82,13 +90,14 @@
     justify-content:flex-end;
     align-items:center;
     width: 100%;
-    height: 16 vmin;
 }
 .stamp {
-    width: 30vmin;
-    height: 20vmin;
-    margin: 6vmin;
-    object-fit: contain;
+    margin: 2vw;
+    height: 16vw;
+    overflow: hidden;
+    object-fit:contain;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.15);
+    z-index: 1;
 }
 .addressBox {
     height:50%;
@@ -101,4 +110,9 @@
     border-bottom: 3px red solid;
     width: 80%;
     margin: 8px;
+}
+
+#mapId {
+    height: 12vw;
+    width: 16vw;
 }
