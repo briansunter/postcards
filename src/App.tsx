@@ -9,31 +9,41 @@ function App() {
   const urlParams = new URLSearchParams(window.location.search);
   const urlDataString = atob(urlParams.get("card") || "");
   interface URLData {
-    frontImage?: string;
-    latitude?: number;
-    longitude?: number;
-    message?: string;
-    to?: string;
-    address?: string;
-    sender?: string;
+    frontImage: string;
+    latitude: number;
+    longitude: number;
+    message: string;
+    to: string;
+    address: string;
+    sender: string;
   }
 
-  let urlData: URLData = {};
-
+  let urlData: URLData;
+  const defaultUrlData: URLData = {
+    frontImage: "https://i.imgur.com/TOpuoX2.jpg",
+    latitude: 42.3528,
+    longitude: -83.1421,
+    message:
+      "This is the internet version of sending a postcard home. Use this to send and receive unique flippable postcards. Click on any of these text fields or the map to edit them. Click on the card to flip it.",
+    to: "Someone Special",
+    address: "San Francisco, CA",
+    sender: "Brian Sunter",
+  };
   try {
     urlData = JSON.parse(urlDataString);
   } catch (e) {
+    urlData = defaultUrlData;
     console.log("could not parse data", e);
   }
 
   const {
-    frontImage = "https://i.imgur.com/TOpuoX2.jpg",
-    latitude = 42.3528,
-    longitude = -83.1421,
-    message = "This is the internet version of sending a postcard home. Use this to send and recieve unique flippable postcards.",
-    to = "Someone Special",
-    address = "San Francisco, CA",
-    sender = "Brian Sunter",
+    frontImage,
+    latitude,
+    longitude,
+    message,
+    to,
+    address,
+    sender,
   } = urlData;
 
   const [flip, setFlip] = useState(true);
