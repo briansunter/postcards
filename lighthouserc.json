@@ -1,0 +1,14 @@
+{
+  "ci": {
+    "collect": {
+      "staticDistDir": "./build",
+      "isSinglePageApplication": true
+    },
+    "assert": {
+      "preset": "lighthouse:recommended",
+      "assertions": {
+        "canonical": "off"
+      }
+    }
+  }
+}
