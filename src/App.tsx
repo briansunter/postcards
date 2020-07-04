@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Map, Marker, Popup, TileLayer } from "react-leaflet";
+import { Map, TileLayer } from "react-leaflet";
 import { LatLngTuple } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -19,7 +19,6 @@ function App() {
   }
 
   let urlData: URLData = {};
-  const f = urlData.frontImage;
 
   try {
     urlData = JSON.parse(urlDataString);
@@ -29,8 +28,8 @@ function App() {
 
   const {
     frontImage = "https://i.imgur.com/TOpuoX2.jpg",
-    latitude = 28.665,
-    longitude = -82.1129,
+    latitude = 42.3528,
+    longitude = -83.1421,
     message = "This is the internet version of sending a postcard home. Use this to send and recieve unique flippable postcards.",
     to = "Someone Special",
     address = "San Francisco, CA",
