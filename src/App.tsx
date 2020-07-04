@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Map, TileLayer } from "react-leaflet";
-import { DomEvent, LatLngTuple } from "leaflet";
+import { LatLngTuple } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 import "./App.css";
@@ -44,6 +44,8 @@ function App() {
   const [state, setState] = useState(urlData);
 
   const position: LatLngTuple = [state.latitude, state.longitude];
+
+  const cardData = btoa(JSON.stringify(state));
 
   return (
     <div className="App" data-testid="home">
@@ -143,25 +145,61 @@ function App() {
                   </label>
                 )}
                 <div className="addressBox">
-                  <p className="address">
-                    {isDefaultCard ? (
-                      <input
-                        type="text"
-                        className="address"
-                        value={state.to}
-                        onChange={(e) => {
-                          setState({ ...state, to: e.target.value });
-                        }}
-                        onClick={(e) => {
+                  {isDefaultCard ? (
+                    <input
+                      type="text"
+                      className="address"
+                      value={state.to}
+                      onChange={(e) => {
+                        setState({ ...state, to: e.target.value });
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    />
+                  ) : (
+                    <p className="address">TO: {state.to}</p>
+                  )}
+                  {isDefaultCard ? (
+                    <input
+                      type="text"
+                      className="address"
+                      value={state.address}
+                      onChange={(e) => {
+                        setState({ ...state, address: e.target.value });
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    />
+                  ) : (
+                    <p className="address">{state.address}</p>
+                  )}
+                  {isDefaultCard ? (
+                    <input
+                      type="text"
+                      className="address"
+                      value={state.sender}
+                      onChange={(e) => {
+                        setState({ ...state, sender: e.target.value });
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    />
+                  ) : (
+                    <p className="address">FROM: {state.sender}</p>
+                  )}
+                  {isDefaultCard && (
+                    <div>
+                      <textarea
+                        value={`${window.location.href}?card=${cardData}`}
+                        onClick={(e: any) => {
                           e.stopPropagation();
                         }}
                       />
-                    ) : (
-                      <p className="address">TO: {state.to}</p>
-                    )}
-                  </p>
-                  <p className="address"> {state.address} </p>
-                  <p className="address">FROM: {state.sender} </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
