@@ -1,32 +1,47 @@
 import React from "react";
 import "./App.css";
-import Front from "./img/miami.png";
-import Stamp from "./img/stamp.jpg";
 
 function App() {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  const frontImage = urlParams.get("front_image");
+  const stampImage = urlParams.get("stamp_image");
+  const message = atob(urlParams.get("message") || "");
+  const name = atob(urlParams.get("name") || "");
+  const street = atob(urlParams.get("street") || "");
+  const state = atob(urlParams.get("state") || "");
+
+  const defaultStamp = "https://i.imgur.com/ktLaE2K.jpeg";
+  const defaultFront = "https://i.imgur.com/YMP3MRq.jpg";
+
   return (
     <div className="App" data-testid="home">
       <div className="post-card">
         <div className="flip-card">
           <div className="flip-card-inner">
             <div className="flip-card-front">
-              <img className="front-img" src={Front} alt="Avatar" />
+              <img
+                className="front-img"
+                src={frontImage || defaultFront}
+                alt="Avatar"
+              />
             </div>
             <div className="flip-card-back">
               <div className="left-content">
-                <p className="writing">
-                  I feel bare. I didn't realize I wore my secrets as armor until
-                  they were gone and now everyone sees me as I really am.
-                </p>
+                <p className="writing">{message}</p>
               </div>
               <div className="right-content">
                 <div className="stamp-container">
-                  <img className="stamp" src={Stamp} alt="Avatar" />
+                  <img
+                    className="stamp"
+                    src={stampImage || defaultStamp}
+                    alt="Avatar"
+                  />
                 </div>
                 <div className="addressBox">
-                  <p className="address">Shay Marie</p>
-                  <p className="address"> 123 Suntree</p>
-                  <p className="address"> Melbourne, Fl 94107</p>
+                  <p className="address">{name} </p>
+                  <p className="address"> {street} </p>
+                  <p className="address"> {state} </p>
                 </div>
               </div>
             </div>
