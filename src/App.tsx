@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+
 import "./App.css";
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
   const name = atob(urlParams.get("name") || "");
   const street = atob(urlParams.get("street") || "");
   const state = atob(urlParams.get("state") || "");
+  const [flip, setFlip] = useState(false);
 
   const defaultStamp = "https://i.imgur.com/ktLaE2K.jpeg";
   const defaultFront = "https://i.imgur.com/YMP3MRq.jpg";
@@ -18,7 +20,12 @@ function App() {
     <div className="App" data-testid="home">
       <div className="post-card">
         <div className="flip-card">
-          <div className="flip-card-inner">
+          <div
+            onClick={() => setFlip(!flip)}
+            className={`flip-card-inner ${
+              flip ? "flip-card-togggle-on" : "flip-card-toggle-off"
+            }`}
+          >
             <div className="flip-card-front">
               <img
                 className="front-img"
