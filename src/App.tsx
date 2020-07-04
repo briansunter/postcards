@@ -18,6 +18,8 @@ function App() {
     sender: string;
   }
 
+  let isDefaultCard = true;
+
   let urlData: URLData;
   const defaultUrlData: URLData = {
     frontImage: "https://i.imgur.com/TOpuoX2.jpg",
@@ -31,6 +33,7 @@ function App() {
   };
   try {
     urlData = JSON.parse(urlDataString);
+    isDefaultCard = false;
   } catch (e) {
     urlData = defaultUrlData;
     console.log("could not parse data", e);
@@ -67,6 +70,7 @@ function App() {
               <div className="left-content">
                 <p className="writing">{message}</p>
               </div>
+              <div className="middleLine" />
               <div className="right-content">
                 <div className="stamp-container">
                   <Map
