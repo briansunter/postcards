@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Map, TileLayer } from "react-leaflet";
-import { LatLngTuple } from "leaflet";
+import { DomEvent, LatLngTuple } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 import "./App.css";
@@ -39,19 +39,11 @@ function App() {
     console.log("could not parse data", e);
   }
 
-  const {
-    frontImage,
-    latitude,
-    longitude,
-    message,
-    to,
-    address,
-    sender,
-  } = urlData;
-
   const [flip, setFlip] = useState(true);
 
-  const position: LatLngTuple = [latitude, longitude];
+  const [state, setState] = useState(urlData);
+
+  const position: LatLngTuple = [state.latitude, state.longitude];
 
   return (
     <div className="App" data-testid="home">
@@ -64,21 +56,44 @@ function App() {
             }`}
           >
             <div className="flip-card-front">
-              <img className="front-img" src={frontImage} alt="Avatar" />
+              <img className="front-img" src={state.frontImage} alt="Avatar" />
             </div>
             <div className="flip-card-back">
               <div className="left-content">
-                <p className="writing">{message}</p>
+                {isDefaultCard ? (
+                  <textarea
+                    className="writing"
+                    value={state.message}
+                    onChange={(e) => {
+                      setState({ ...state, message: e.target.value });
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  />
+                ) : (
+                  <p className="writing">{state.message}</p>
+                )}
               </div>
               <div className="middleLine" />
               <div className="right-content">
-                <div className="stamp-container">
+                <div
+                  className="stamp-container"
+                  onClick={(e: any) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
                   <Map
                     className="stamp"
                     id="mapId"
                     center={position}
                     zoom={9}
                     attributionControl={false}
+                    onMoveEnd={(e: any) => {
+                      const { lat, lng } = e.target.getCenter();
+                      setState({ ...state, latitude: lat, longitude: lng });
+                    }}
                     zoomControl={false}
                   >
                     <TileLayer
@@ -87,10 +102,66 @@ function App() {
                     />
                   </Map>
                 </div>
+                {isDefaultCard && (
+                  <label>
+                    Latitude:
+                    <textarea
+                      value={Intl.NumberFormat(navigator.language, {
+                        minimumFractionDigits: 1,
+                        maximumFractionDigits: 10,
+                      }).format(state.latitude)}
+                      onChange={(e) => {
+                        const newLat = parseFloat(e.target.value);
+                        if (newLat) {
+                          setState({ ...state, latitude: newLat });
+                        }
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    />
+                  </label>
+                )}
+                {isDefaultCard && (
+                  <label>
+                    Longitude:
+                    <textarea
+                      value={Intl.NumberFormat(navigator.language, {
+                        minimumFractionDigits: 1,
+                        maximumFractionDigits: 10,
+                      }).format(state.longitude)}
+                      onChange={(e) => {
+                        const newLong = parseFloat(e.target.value);
+                        if (newLong) {
+                          setState({ ...state, longitude: newLong });
+                        }
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    />
+                  </label>
+                )}
                 <div className="addressBox">
-                  <p className="address">TO: {to} </p>
-                  <p className="address"> {address} </p>
-                  <p className="address">FROM: {sender} </p>
+                  <p className="address">
+                    {isDefaultCard ? (
+                      <input
+                        type="text"
+                        className="address"
+                        value={state.to}
+                        onChange={(e) => {
+                          setState({ ...state, to: e.target.value });
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      />
+                    ) : (
+                      <p className="address">TO: {state.to}</p>
+                    )}
+                  </p>
+                  <p className="address"> {state.address} </p>
+                  <p className="address">FROM: {state.sender} </p>
                 </div>
               </div>
             </div>

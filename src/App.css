@@ -67,7 +67,17 @@
 }
 
 .writing {
+    width: 80%;
+    height: 80%;
+
+    color: white;
+    background-color: transparent;
     padding: 6vmin;
+    font-size: 2vw;
+}
+
+.writing textarea {
+    vertical-align: middle;
 }
 
 .left-content {
