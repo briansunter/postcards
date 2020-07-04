@@ -59,6 +59,18 @@ function App() {
           >
             <div className="flip-card-front">
               <img className="front-img" src={state.frontImage} alt="Avatar" />
+              {isDefaultCard && (
+                <input
+                  type="text"
+                  value={state.frontImage}
+                  onChange={(e) => {
+                    setState({ ...state, frontImage: e.target.value });
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                />
+              )}
             </div>
             <div className="flip-card-back">
               <div className="left-content">

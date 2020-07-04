@@ -53,6 +53,7 @@
     background-color: #bbb;
     color: black;
     display: flex;
+    flex-direction:column;
 }
 
 /* Style the back side */
