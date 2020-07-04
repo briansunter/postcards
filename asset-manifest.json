@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/postcards/static/css/main.de851f10.chunk.css",
-    "main.js": "/postcards/static/js/main.e708a421.chunk.js",
-    "main.js.map": "/postcards/static/js/main.e708a421.chunk.js.map",
+    "main.js": "/postcards/static/js/main.95ca318c.chunk.js",
+    "main.js.map": "/postcards/static/js/main.95ca318c.chunk.js.map",
     "runtime-main.js": "/postcards/static/js/runtime-main.655adb5d.js",
     "runtime-main.js.map": "/postcards/static/js/runtime-main.655adb5d.js.map",
     "static/css/2.c5a5aa87.chunk.css": "/postcards/static/css/2.c5a5aa87.chunk.css",
     "static/js/2.212b4b55.chunk.js": "/postcards/static/js/2.212b4b55.chunk.js",
     "static/js/2.212b4b55.chunk.js.map": "/postcards/static/js/2.212b4b55.chunk.js.map",
     "index.html": "/postcards/index.html",
-    "precache-manifest.d7aa02ce538231373d5da11680ca6814.js": "/postcards/precache-manifest.d7aa02ce538231373d5da11680ca6814.js",
+    "precache-manifest.831b307a1161e1f058f6c27ec793f4f4.js": "/postcards/precache-manifest.831b307a1161e1f058f6c27ec793f4f4.js",
     "service-worker.js": "/postcards/service-worker.js",
     "static/css/2.c5a5aa87.chunk.css.map": "/postcards/static/css/2.c5a5aa87.chunk.css.map",
     "static/css/main.de851f10.chunk.css.map": "/postcards/static/css/main.de851f10.chunk.css.map",
@@ -20,6 +20,6 @@
     "static/css/2.c5a5aa87.chunk.css",
     "static/js/2.212b4b55.chunk.js",
     "static/css/main.de851f10.chunk.css",
-    "static/js/main.e708a421.chunk.js"
+    "static/js/main.95ca318c.chunk.js"
   ]
 }
