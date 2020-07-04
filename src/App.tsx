@@ -1,5 +1,4 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import Front from "./img/miami.png";
 import Stamp from "./img/stamp.jpg";
