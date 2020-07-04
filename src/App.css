@@ -5,8 +5,8 @@
     justify-content: center;
 }
 .post-card{
-    height: 40vw;
-    width: 60vw;
+    height: 40vmax;
+    width: 60vmax;
     margin: 4vw;
 }
 .flip-card {
@@ -109,7 +109,7 @@
 .address {
     border-bottom: 3px red solid;
     width: 80%;
-    margin: 2vw;
+    margin: 2vmin;
 }
 
 #mapId {
