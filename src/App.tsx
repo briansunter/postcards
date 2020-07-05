@@ -218,6 +218,11 @@ function App() {
           </div>
         </div>
       </div>
+      {!isDefaultCard && (
+        <a className="makeOwnButton" href="./">
+          Make your own
+        </a>
+      )}
     </div>
   );
 }

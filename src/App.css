@@ -5,6 +5,7 @@
     height: 100%;
     display: flex;
     justify-content: center;
+    flex-direction:column;
 }
 .post-card{
     height: 40vmax;
@@ -137,4 +138,17 @@
     left: 50%;
     margin: 8vmin;
     height: 80%;
+}
+
+.makeOwnButton {
+    margin: 2vmin;
+    height: 2vmin;
+    background-color: #4CAF50; 
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
 }
