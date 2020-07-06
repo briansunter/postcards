@@ -1,9 +1,16 @@
 import React, { useState } from "react";
+
 import { Map, TileLayer } from "react-leaflet";
 import { LatLngTuple } from "leaflet";
+import Tour from "reactour";
+
 import "leaflet/dist/leaflet.css";
 
 import "./App.css";
+
+function sleep(time: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
 
 function App() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -26,7 +33,7 @@ function App() {
     latitude: 42.3528,
     longitude: -83.1421,
     message:
-      "This is the internet version of sending a postcard home. Use this to send and receive unique flippable postcards. Click on any of these text fields or the map to edit them. Click on the card to flip it.",
+      "This is the Internet version of sending a postcard home. Use this to send and receive unique flippable postcards. Click on any of these text fields or the map to edit them. Click on the card to flip it.",
     to: "Someone Special",
     address: "San Francisco, CA",
     sender: "Brian Sunter",
@@ -43,12 +50,90 @@ function App() {
 
   const [state, setState] = useState(urlData);
 
+  const alreadySeenTutorial =
+    localStorage.getItem("pc:seenTutorial") === "true";
+
+  const [tutorialOpen, setTutorialOpen] = useState(
+    isDefaultCard && !alreadySeenTutorial
+  );
+
+  const showTutorial = (shouldShow: boolean) => {
+    setTutorialOpen(shouldShow);
+    localStorage.setItem("pc:seenTutorial", !shouldShow ? "true" : "false");
+  };
+
   const position: LatLngTuple = [state.latitude, state.longitude];
+  const steps = [
+    {
+      selector: ".App",
+      content:
+        "Welcome to postcards, a way of making digital postcards to send to your friends. This is the tutorial. Click the next arrow to go to the next tutorial step or click 'x' to exit.",
+      action: () => {
+        setFlip(true);
+      },
+    },
+    {
+      selector: ".frontImgInput",
+      content:
+        "This is where you can select a nice cover image for your postcard. Make sure sure your image site supports embedding. I recommend https://imgur.com.",
+      action: () => {
+        setFlip(true);
+      },
+    },
+    {
+      selector: ".front-img",
+      content: "Tap anywhere on the card to flip.",
+      action: () => {
+        setFlip(true);
+      },
+    },
+    {
+      selector: ".left-content",
+      content: "This is the area to write your message.",
+      action: () => {
+        setFlip(false);
+        sleep(1000).then(() => {
+          showTutorial(false);
+          showTutorial(true);
+        });
+      },
+    },
+    {
+      selector: ".stamp",
+      content:
+        "Instead of a 'stamp', use a small map of your current location from OpenStreetMaps. You can drag to change the location. You can also update the latitude and longitude boxes below",
+      action: () => {
+        setFlip(false);
+      },
+    },
+    {
+      selector: ".address",
+      content:
+        "Add the person you're sending the postcard to and their city here.",
+      action: () => {
+        setFlip(false);
+      },
+    },
+    {
+      selector: ".shareLink",
+      content:
+        "This is the link to share your postcard. Send it to someone so they can view it.",
+      action: () => {
+        setFlip(false);
+      },
+    },
+  ];
 
   const cardData = btoa(JSON.stringify(state));
-
   return (
     <div className="App" data-testid="home">
+      <Tour
+        closeWithMask={false}
+        steps={steps}
+        isOpen={tutorialOpen}
+        lastStepNextButton={<button className="makeOwnButton">Done!</button>}
+        onRequestClose={() => showTutorial(false)}
+      />
       <div className="post-card">
         <div className="flip-card">
           <div
@@ -62,6 +147,7 @@ function App() {
               {isDefaultCard && (
                 <input
                   type="text"
+                  className="frontImgInput"
                   value={state.frontImage}
                   onChange={(e) => {
                     setState({ ...state, frontImage: e.target.value });
@@ -205,6 +291,7 @@ function App() {
                   {isDefaultCard && (
                     <div>
                       <textarea
+                        className="shareLink"
                         value={`${window.location.href}?card=${cardData}`}
                         onClick={(e: any) => {
                           e.stopPropagation();
@@ -218,9 +305,17 @@ function App() {
           </div>
         </div>
       </div>
-      {!isDefaultCard && (
+      {!isDefaultCard ? (
         <a className="makeOwnButton" href="./">
           Make your own
+        </a>
+      ) : (
+        <a
+          className="makeOwnButton"
+          href="./"
+          onClick={() => showTutorial(true)}
+        >
+          Show Tutorial
         </a>
       )}
     </div>
