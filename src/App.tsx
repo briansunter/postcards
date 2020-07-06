@@ -209,7 +209,8 @@ function App() {
                 {isDefaultCard && (
                   <label>
                     Latitude:
-                    <textarea
+                    <input
+                      type="text"
                       value={Intl.NumberFormat(navigator.language, {
                         minimumFractionDigits: 1,
                         maximumFractionDigits: 10,
@@ -229,7 +230,7 @@ function App() {
                 {isDefaultCard && (
                   <label>
                     Longitude:
-                    <textarea
+                    <input
                       value={Intl.NumberFormat(navigator.language, {
                         minimumFractionDigits: 1,
                         maximumFractionDigits: 10,

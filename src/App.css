@@ -8,8 +8,8 @@
     flex-direction:column;
 }
 .post-card{
-    height: 40vmax;
-    width: 60vmax;
+    height: calc(66vw*.8);
+    width: calc(100vw*.8);
     margin: 4vw;
 }
 .flip-card {
@@ -76,7 +76,7 @@
 
     color: white;
     background-color: transparent;
-    padding: 6vmin;
+    padding: 2vw;
     font-size: 2vw;
 }
 
@@ -102,8 +102,6 @@
 .stamp-container {
     display:flex;
     justify-content:flex-end;
-    align-items:center;
-    width: 100%;
 }
 .stamp {
     margin: 2vw;
