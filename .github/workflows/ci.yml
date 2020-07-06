@@ -11,13 +11,13 @@ jobs:
       uses: actions/checkout@v2 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
       with:
         persist-credentials: false
-    - name: Get Repo Name
-      run:  echo ::set-env name=REPO_NAME::$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}' | sed -e "s/:refs//")
-      shell: bash
+    # - name: Get Repo Name
+    #   run:  echo ::set-env name=REPO_NAME::$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}' | sed -e "s/:refs//")
+    #   shell: bash
 
-    - name: Set Public URL
-      run: echo ::set-env name=PUBLIC_URL::$(echo "/$REPO_NAME")
-      shell: bash
+    # - name: Set Public URL
+    #   run: echo ::set-env name=PUBLIC_URL::$(echo "/$REPO_NAME")
+    #   shell: bash
 
     - name: Install
       run: 'npm ci'
