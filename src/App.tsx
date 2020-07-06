@@ -249,47 +249,56 @@ function App() {
                 )}
                 <div className="addressBox">
                   {isDefaultCard ? (
-                    <input
-                      type="text"
-                      className="address"
-                      value={state.to}
-                      onChange={(e) => {
-                        setState({ ...state, to: e.target.value });
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    />
+                    <label>
+                      TO:
+                      <input
+                        type="text"
+                        className="address"
+                        value={state.to}
+                        onChange={(e) => {
+                          setState({ ...state, to: e.target.value });
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      />
+                    </label>
                   ) : (
                     <p className="address">TO: {state.to}</p>
                   )}
                   {isDefaultCard ? (
-                    <input
-                      type="text"
-                      className="address"
-                      value={state.address}
-                      onChange={(e) => {
-                        setState({ ...state, address: e.target.value });
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    />
+                    <label>
+                      Address:
+                      <input
+                        type="text"
+                        className="address"
+                        value={state.address}
+                        onChange={(e) => {
+                          setState({ ...state, address: e.target.value });
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      />
+                    </label>
                   ) : (
                     <p className="address">{state.address}</p>
                   )}
                   {isDefaultCard ? (
-                    <input
-                      type="text"
-                      className="address"
-                      value={state.sender}
-                      onChange={(e) => {
-                        setState({ ...state, sender: e.target.value });
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    />
+                    <label>
+                      From:
+                      <input
+                        type="text"
+                        className="address"
+                        value={state.sender}
+                        onChange={(e) => {
+                          setState({ ...state, sender: e.target.value });
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      />
+                    </label>
                   ) : (
                     <p className="address">FROM: {state.sender}</p>
                   )}

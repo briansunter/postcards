@@ -116,8 +116,6 @@
 .addressBox {
     height:50%;
     display:flex;
-    align-items: center;
-    justify-content:center;
     flex-direction:column;
 }
 .address {
