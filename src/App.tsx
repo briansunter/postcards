@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { RefObject, createRef, useState } from "react";
 
 import { Map, TileLayer } from "react-leaflet";
 import { LatLngTuple } from "leaflet";
@@ -123,10 +123,14 @@ function App() {
       },
     },
   ];
+  const linkTextRef: RefObject<HTMLTextAreaElement> = createRef();
 
   const cardData = btoa(JSON.stringify(state));
   return (
     <div className="App" data-testid="home">
+      <a href="./" className="title">
+        Postcards
+      </a>
       <Tour
         closeWithMask={false}
         steps={steps}
@@ -292,9 +296,11 @@ function App() {
                     <div>
                       <textarea
                         className="shareLink"
+                        ref={linkTextRef}
                         value={`${window.location.href}?card=${cardData}`}
                         onClick={(e: any) => {
                           e.stopPropagation();
+                          linkTextRef.current?.select();
                         }}
                       />
                     </div>
