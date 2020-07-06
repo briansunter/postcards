@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/postcards/static/css/main.c26545bb.chunk.css",
+    "main.css": "/postcards/static/css/main.d1b2f07a.chunk.css",
     "main.js": "/postcards/static/js/main.c107f636.chunk.js",
     "main.js.map": "/postcards/static/js/main.c107f636.chunk.js.map",
     "runtime-main.js": "/postcards/static/js/runtime-main.655adb5d.js",
@@ -9,17 +9,17 @@
     "static/js/2.96198921.chunk.js": "/postcards/static/js/2.96198921.chunk.js",
     "static/js/2.96198921.chunk.js.map": "/postcards/static/js/2.96198921.chunk.js.map",
     "index.html": "/postcards/index.html",
-    "precache-manifest.83ed4f34071ac023f51f723862423d3d.js": "/postcards/precache-manifest.83ed4f34071ac023f51f723862423d3d.js",
+    "precache-manifest.e8226fadf5beaf4799d278babb0494b6.js": "/postcards/precache-manifest.e8226fadf5beaf4799d278babb0494b6.js",
     "service-worker.js": "/postcards/service-worker.js",
     "static/css/2.c5a5aa87.chunk.css.map": "/postcards/static/css/2.c5a5aa87.chunk.css.map",
-    "static/css/main.c26545bb.chunk.css.map": "/postcards/static/css/main.c26545bb.chunk.css.map",
+    "static/css/main.d1b2f07a.chunk.css.map": "/postcards/static/css/main.d1b2f07a.chunk.css.map",
     "static/js/2.96198921.chunk.js.LICENSE.txt": "/postcards/static/js/2.96198921.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.655adb5d.js",
     "static/css/2.c5a5aa87.chunk.css",
     "static/js/2.96198921.chunk.js",
-    "static/css/main.c26545bb.chunk.css",
+    "static/css/main.d1b2f07a.chunk.css",
     "static/js/main.c107f636.chunk.js"
   ]
 }
