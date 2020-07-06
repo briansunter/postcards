@@ -307,15 +307,18 @@ function App() {
                   )}
                   {isDefaultCard && (
                     <div>
-                      <textarea
-                        className="shareLink"
-                        ref={linkTextRef}
-                        value={`${window.location.href}?card=${cardData}`}
-                        onClick={(e: any) => {
-                          e.stopPropagation();
-                          linkTextRef.current?.select();
-                        }}
-                      />
+                      <label>
+                        Share Link:
+                        <textarea
+                          className="shareLink address"
+                          ref={linkTextRef}
+                          value={`${window.location.href}?card=${cardData}`}
+                          onClick={(e: any) => {
+                            e.stopPropagation();
+                            linkTextRef.current?.select();
+                          }}
+                        />
+                      </label>
                     </div>
                   )}
                 </div>
