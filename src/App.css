@@ -124,6 +124,7 @@
     border-bottom: 3px red solid;
     width: 80%;
     margin: 2vmin;
+    font-size: 3vw;
 }
 
 #mapId {
