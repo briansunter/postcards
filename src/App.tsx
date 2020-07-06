@@ -131,6 +131,8 @@ function App() {
       <a href="./" className="title">
         PostcardPop ✉
       </a>
+      <meta property="og:image" content={state.frontImage} />
+
       <Tour
         closeWithMask={false}
         steps={steps}
