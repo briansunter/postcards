@@ -67,7 +67,7 @@ function App() {
     {
       selector: ".App",
       content:
-        "Welcome to postcards, a way of making digital postcards to send to your friends. This is the tutorial. Click the next arrow to go to the next tutorial step or click 'x' to exit.",
+        "Welcome to PostcardPop, a way of making digital postcards to send to your friends. This is the tutorial. Click the next arrow to go to the next tutorial step or click 'x' to exit.",
       action: () => {
         setFlip(true);
       },
@@ -129,7 +129,7 @@ function App() {
   return (
     <div className="App" data-testid="home">
       <a href="./" className="title">
-        Postcards
+        PostcardPop ✉
       </a>
       <Tour
         closeWithMask={false}
