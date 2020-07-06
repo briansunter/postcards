@@ -131,6 +131,7 @@ function App() {
       <a href="./" className="title">
         PostcardPop ✉
       </a>
+      <meta property="og:title" content="PostcardPop Card" />
       <meta property="og:image" content={state.frontImage} />
 
       <Tour
