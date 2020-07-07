@@ -307,13 +307,15 @@ function App() {
           Make your own
         </a>
       ) : (
-        <a
-          className="makeOwnButton"
-          href="./"
-          onClick={() => showTutorial(true)}
-        >
-          Show Tutorial
-        </a>
+        <div>
+          <a
+            className="makeOwnButton"
+            href="./"
+            onClick={() => showTutorial(true)}
+          >
+            Show Tutorial
+          </a>
+        </div>
       )}
     </div>
   );
