@@ -285,6 +285,21 @@ function App() {
             </div>
           </div>
         </div>
+        {!state.isDefaultCard ? (
+          <a className="makeOwnButton" href="./">
+            Make your own
+          </a>
+        ) : (
+          <div>
+            <a
+              className="makeOwnButton"
+              href="./"
+              onClick={() => showTutorial(true)}
+            >
+              Show Tutorial
+            </a>
+          </div>
+        )}
       </div>
       {state.isDefaultCard && (
         <label>
@@ -300,21 +315,6 @@ function App() {
             }}
           />
         </label>
-      )}
-      {!state.isDefaultCard ? (
-        <a className="makeOwnButton" href="./">
-          Make your own
-        </a>
-      ) : (
-        <div>
-          <a
-            className="makeOwnButton"
-            href="./"
-            onClick={() => showTutorial(true)}
-          >
-            Show Tutorial
-          </a>
-        </div>
       )}
     </div>
   );
