@@ -36,7 +36,7 @@ function App() {
     to: "",
     address: "",
     sender: "",
-    isDefaultCard: false,
+    isDefaultCard: true,
   };
 
   const [flip, setFlip] = useState(true);
@@ -48,7 +48,6 @@ function App() {
       const urlData: URLData = JSON.parse(urlDataString);
       setState({ ...urlData, isDefaultCard: false });
     } catch (e) {
-      setState({ ...defaultUrlData, isDefaultCard: true });
       console.log("could not parse data", e);
     }
   }, [urlDataString]);
@@ -300,22 +299,24 @@ function App() {
             </a>
           </div>
         )}
+        {state.isDefaultCard && (
+          <div>
+            <label>
+              Share Link:
+              <input
+                type="text"
+                className="shareLink"
+                ref={linkTextRef}
+                value={`${window.location.href}?card=${cardData}`}
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  linkTextRef.current?.select();
+                }}
+              />
+            </label>
+          </div>
+        )}
       </div>
-      {state.isDefaultCard && (
-        <label>
-          Share Link:
-          <input
-            type="text"
-            className="shareLink"
-            ref={linkTextRef}
-            value={`${window.location.href}?card=${cardData}`}
-            onClick={(e: any) => {
-              e.stopPropagation();
-              linkTextRef.current?.select();
-            }}
-          />
-        </label>
-      )}
     </div>
   );
 }
