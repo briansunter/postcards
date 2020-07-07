@@ -247,7 +247,7 @@ function App() {
                     <input
                       type="text"
                       className="address"
-                      placeholder="Approx. recipient address"
+                      placeholder="Recipient city"
                       value={state.address}
                       onChange={(e) => {
                         setState({ ...state, address: e.target.value });
