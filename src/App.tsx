@@ -159,21 +159,6 @@ function App() {
         lastStepNextButton={<button className="makeOwnButton">Done!</button>}
         onRequestClose={() => showTutorial(false)}
       />
-      {!state.isDefaultCard ? (
-        <a className="makeOwnButton" href="./">
-          Make your own
-        </a>
-      ) : (
-        <div>
-          <a
-            className="makeOwnButton"
-            href="./"
-            onClick={() => showTutorial(true)}
-          >
-            Show Tutorial
-          </a>
-        </div>
-      )}
       <div className="post-card">
         <div className="flip-card">
           <div
@@ -301,10 +286,11 @@ function App() {
         </div>
       </div>
       {state.isDefaultCard && (
-        <div className="shareLink">
+        <label className="shareLinkLabel">
+          Share Link:
           <input
             type="text"
-            className="shareLink address"
+            className="shareLink"
             ref={linkTextRef}
             value={`${window.location.href}?card=${cardData}`}
             onClick={(e: any) => {
@@ -312,7 +298,20 @@ function App() {
               linkTextRef.current?.select();
             }}
           />
-        </div>
+        </label>
+      )}
+      {!state.isDefaultCard ? (
+        <a className="makeOwnButton" href="./">
+          Make your own
+        </a>
+      ) : (
+        <a
+          className="makeOwnButton"
+          href="./"
+          onClick={() => showTutorial(true)}
+        >
+          Show Tutorial
+        </a>
       )}
     </div>
   );

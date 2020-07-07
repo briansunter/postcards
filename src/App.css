@@ -169,8 +169,13 @@ body {
     flex-direction:row;
 }
 
+.shareLinkLabel {
+    margin-top:6vw;
+}
+
 .shareLink {
     height:10vw;
+    width:100%;
     margin-top:6vw;
-    margin-bottom:20vw;
+    margin-bottom:6vw;
 }
