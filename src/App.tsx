@@ -36,7 +36,7 @@ function App() {
     to: "",
     address: "",
     sender: "",
-    isDefaultCard: true,
+    isDefaultCard: false,
   };
 
   const [flip, setFlip] = useState(true);
@@ -48,6 +48,7 @@ function App() {
       const urlData: URLData = JSON.parse(urlDataString);
       setState({ ...urlData, isDefaultCard: false });
     } catch (e) {
+      setState({ ...defaultUrlData, isDefaultCard: true });
       console.log("could not parse data", e);
     }
   }, [urlDataString]);
