@@ -75,6 +75,7 @@ body {
 
 .writing {
     width: 30vw ;
+    height:80%;
     overflow-wrap: break-word;
     color: white;
     background-color: transparent;
