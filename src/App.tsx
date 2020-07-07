@@ -139,7 +139,7 @@ function App() {
       },
     },
   ];
-  const linkTextRef: RefObject<HTMLInputElement> = createRef();
+  const linkTextRef: RefObject<HTMLTextAreaElement> = createRef();
   const imageTextRef: RefObject<HTMLInputElement> = createRef();
 
   const cardData = btoa(JSON.stringify(state));
@@ -288,8 +288,7 @@ function App() {
       {state.isDefaultCard && (
         <label className="shareLinkLabel">
           Share Link:
-          <input
-            type="text"
+          <textarea
             className="shareLink"
             ref={linkTextRef}
             value={`${window.location.href}?card=${cardData}`}
