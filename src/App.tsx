@@ -159,6 +159,21 @@ function App() {
         lastStepNextButton={<button className="makeOwnButton">Done!</button>}
         onRequestClose={() => showTutorial(false)}
       />
+      {!state.isDefaultCard ? (
+        <a className="makeOwnButton" href="./">
+          Make your own
+        </a>
+      ) : (
+        <div>
+          <a
+            className="makeOwnButton"
+            href="./"
+            onClick={() => showTutorial(true)}
+          >
+            Show Tutorial
+          </a>
+        </div>
+      )}
       <div className="post-card">
         <div className="flip-card">
           <div
@@ -287,34 +302,16 @@ function App() {
       </div>
       {state.isDefaultCard && (
         <div className="shareLink">
-          <label>
-            Share Link:
-            <input
-              type="text"
-              className="shareLink address"
-              ref={linkTextRef}
-              value={`${window.location.href}?card=${cardData}`}
-              onClick={(e: any) => {
-                e.stopPropagation();
-                linkTextRef.current?.select();
-              }}
-            />
-          </label>
-        </div>
-      )}
-      {!state.isDefaultCard ? (
-        <a className="makeOwnButton" href="./">
-          Make your own
-        </a>
-      ) : (
-        <div>
-          <a
-            className="makeOwnButton"
-            href="./"
-            onClick={() => showTutorial(true)}
-          >
-            Show Tutorial
-          </a>
+          <input
+            type="text"
+            className="shareLink address"
+            ref={linkTextRef}
+            value={`${window.location.href}?card=${cardData}`}
+            onClick={(e: any) => {
+              e.stopPropagation();
+              linkTextRef.current?.select();
+            }}
+          />
         </div>
       )}
     </div>
