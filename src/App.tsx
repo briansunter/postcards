@@ -1,4 +1,4 @@
-import React, { RefObject, createRef, useState } from "react";
+import React, { useEffect, RefObject, createRef, useState } from "react";
 
 import { Map, TileLayer } from "react-leaflet";
 import { LatLngTuple } from "leaflet";
@@ -26,17 +26,17 @@ function App() {
   }
 
   let isDefaultCard = true;
-
+  const messagePlaceholder =
+    "This is the Internet version of sending a postcard home. Use this to send and receive unique flippable postcards. Click on any of these text fields or the map to edit them. Click on the card to flip it.";
   let urlData: URLData;
   const defaultUrlData: URLData = {
     frontImage: "https://i.imgur.com/TOpuoX2.jpg",
     latitude: 42.3528,
     longitude: -83.1421,
-    message:
-      "This is the Internet version of sending a postcard home. Use this to send and receive unique flippable postcards. Click on any of these text fields or the map to edit them. Click on the card to flip it.",
-    to: "Someone Special",
-    address: "San Francisco, CA",
-    sender: "Brian Sunter",
+    message: "",
+    to: "",
+    address: "",
+    sender: "",
   };
   try {
     urlData = JSON.parse(urlDataString);
@@ -123,13 +123,27 @@ function App() {
       },
     },
   ];
-  const linkTextRef: RefObject<HTMLTextAreaElement> = createRef();
+  const linkTextRef: RefObject<HTMLInputElement> = createRef();
+  const imageTextRef: RefObject<HTMLInputElement> = createRef();
 
   const cardData = btoa(JSON.stringify(state));
+
+  useEffect(() => {
+    if (isDefaultCard) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        setState({
+          ...state,
+          longitude: position.coords.longitude,
+          latitude: position.coords.latitude,
+        });
+      });
+    }
+  });
+
   return (
     <div className="App" data-testid="home">
       <a href="./" className="title">
-        PostcardPop ✉
+        ✉PostcardPop
       </a>
       <meta property="og:title" content="PostcardPop Card" />
       <meta property="og:image" content={state.frontImage} />
@@ -156,7 +170,9 @@ function App() {
                   type="text"
                   className="frontImgInput"
                   value={state.frontImage}
+                  ref={imageTextRef}
                   onChange={(e) => {
+                    imageTextRef.current?.select();
                     setState({ ...state, frontImage: e.target.value });
                   }}
                   onClick={(e) => {
@@ -170,6 +186,7 @@ function App() {
                 {isDefaultCard ? (
                   <textarea
                     className="writing"
+                    placeholder={messagePlaceholder}
                     value={state.message}
                     onChange={(e) => {
                       setState({ ...state, message: e.target.value });
@@ -209,117 +226,54 @@ function App() {
                     />
                   </Map>
                 </div>
-                {isDefaultCard && (
-                  <label>
-                    Latitude:
-                    <input
-                      type="text"
-                      value={Intl.NumberFormat(navigator.language, {
-                        minimumFractionDigits: 1,
-                        maximumFractionDigits: 10,
-                      }).format(state.latitude)}
-                      onChange={(e) => {
-                        const newLat = parseFloat(e.target.value);
-                        if (newLat) {
-                          setState({ ...state, latitude: newLat });
-                        }
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    />
-                  </label>
-                )}
-                {isDefaultCard && (
-                  <label>
-                    Longitude:
-                    <input
-                      value={Intl.NumberFormat(navigator.language, {
-                        minimumFractionDigits: 1,
-                        maximumFractionDigits: 10,
-                      }).format(state.longitude)}
-                      onChange={(e) => {
-                        const newLong = parseFloat(e.target.value);
-                        if (newLong) {
-                          setState({ ...state, longitude: newLong });
-                        }
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    />
-                  </label>
-                )}
                 <div className="addressBox">
                   {isDefaultCard ? (
-                    <label>
-                      TO:
-                      <input
-                        type="text"
-                        className="address"
-                        value={state.to}
-                        onChange={(e) => {
-                          setState({ ...state, to: e.target.value });
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      />
-                    </label>
+                    <input
+                      type="text"
+                      className="address"
+                      placeholder="Recipient name"
+                      value={state.to}
+                      onChange={(e) => {
+                        setState({ ...state, to: e.target.value });
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    />
                   ) : (
-                    <p className="address">TO: {state.to}</p>
+                    <p className="address">{state.to}</p>
                   )}
                   {isDefaultCard ? (
-                    <label>
-                      Address:
-                      <input
-                        type="text"
-                        className="address"
-                        value={state.address}
-                        onChange={(e) => {
-                          setState({ ...state, address: e.target.value });
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      />
-                    </label>
+                    <input
+                      type="text"
+                      className="address"
+                      placeholder="Approx. recipient address"
+                      value={state.address}
+                      onChange={(e) => {
+                        setState({ ...state, address: e.target.value });
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    />
                   ) : (
                     <p className="address">{state.address}</p>
                   )}
                   {isDefaultCard ? (
-                    <label>
-                      From:
-                      <input
-                        type="text"
-                        className="address"
-                        value={state.sender}
-                        onChange={(e) => {
-                          setState({ ...state, sender: e.target.value });
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                      />
-                    </label>
+                    <input
+                      type="text"
+                      className="address"
+                      placeholder="Your name"
+                      value={state.sender}
+                      onChange={(e) => {
+                        setState({ ...state, sender: e.target.value });
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    />
                   ) : (
-                    <p className="address">FROM: {state.sender}</p>
-                  )}
-                  {isDefaultCard && (
-                    <div>
-                      <label>
-                        Share Link:
-                        <textarea
-                          className="shareLink address"
-                          ref={linkTextRef}
-                          value={`${window.location.href}?card=${cardData}`}
-                          onClick={(e: any) => {
-                            e.stopPropagation();
-                            linkTextRef.current?.select();
-                          }}
-                        />
-                      </label>
-                    </div>
+                    <p className="address">{state.sender}</p>
                   )}
                 </div>
               </div>
@@ -327,6 +281,23 @@ function App() {
           </div>
         </div>
       </div>
+      {isDefaultCard && (
+        <div className="shareLink">
+          <label>
+            Share Link:
+            <input
+              type="text"
+              className="shareLink address"
+              ref={linkTextRef}
+              value={`${window.location.href}?card=${cardData}`}
+              onClick={(e: any) => {
+                e.stopPropagation();
+                linkTextRef.current?.select();
+              }}
+            />
+          </label>
+        </div>
+      )}
       {!isDefaultCard ? (
         <a className="makeOwnButton" href="./">
           Make your own

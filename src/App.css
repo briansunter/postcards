@@ -1,5 +1,8 @@
 @import-normalize;
-
+@import url("https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap");
+body {
+    background-color: #f4d8cd;
+}
 .App {
     width: 100%;
     height: 100%;
@@ -27,7 +30,7 @@
     text-align: center;
     transition: transform 0.8s;
     transform-style: preserve-3d;
-    box-shadow: 0 16px 32px 0 rgba(0,0,0,0.4);
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
 }
 
 .flip-card-toggle-on {
@@ -51,7 +54,7 @@
 
 /* Style the front side (fallback if image is missing) */
 .flip-card-front {
-    background-color: #bbb;
+    background-color: #bbb  ;
     color: black;
     display: flex;
     flex-direction:column;
@@ -59,7 +62,7 @@
 
 /* Style the back side */
 .flip-card-back {
-    background-color: dodgerblue;
+    background-color: #0075C4;
     color: white;
     transform: rotateY(180deg);
     display: flex;
@@ -131,16 +134,16 @@
 }
 
 .middleLine {
-    border-left: 3px solid red;
+    border-left: .5vw solid #f15152 ;
     left: 50%;
-    margin: 8vmin;
+    margin: 6vw;
     height: 80%;
 }
 
 .makeOwnButton {
     margin: 2vmin;
     height: 2vmin;
-    background-color: #4CAF50;
+    background-color: #7EA172;
     border: none;
     color: white;
     padding: 15px 32px;
@@ -151,8 +154,20 @@
 }
 
 .title {
-    font-size: 8vmin;
+    font-size: 12vw;
     margin-bottom: 2vmin;
     margin-top:2vmin;
     margin-left:2vmin;
+    font-family: 'Indie Flower', cursive;
+    color: #0075C4;
+}
+
+.addressRow {
+    display: flex;
+    flex-direction:row;
+}
+
+.shareLink {
+    margin-top:2vw;
+    margin-bottom:2vw;
 }
