@@ -139,7 +139,7 @@ function App() {
       },
     },
   ];
-  const linkTextRef: RefObject<HTMLTextAreaElement> = createRef();
+  const linkTextRef: RefObject<HTMLInputElement> = createRef();
   const imageTextRef: RefObject<HTMLInputElement> = createRef();
 
   const cardData = btoa(JSON.stringify(state));
@@ -286,9 +286,10 @@ function App() {
         </div>
       </div>
       {state.isDefaultCard && (
-        <label className="shareLinkLabel">
+        <label>
           Share Link:
-          <textarea
+          <input
+            type="text"
             className="shareLink"
             ref={linkTextRef}
             value={`${window.location.href}?card=${cardData}`}
@@ -304,13 +305,15 @@ function App() {
           Make your own
         </a>
       ) : (
-        <a
-          className="makeOwnButton"
-          href="./"
-          onClick={() => showTutorial(true)}
-        >
-          Show Tutorial
-        </a>
+        <div>
+          <a
+            className="makeOwnButton"
+            href="./"
+            onClick={() => showTutorial(true)}
+          >
+            Show Tutorial
+          </a>
+        </div>
       )}
     </div>
   );
