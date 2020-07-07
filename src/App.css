@@ -11,8 +11,8 @@ body {
     flex-direction:column;
 }
 .post-card{
-    height: calc(66vw*.8);
-    width: calc(100vw*.8);
+    height: calc(66vw*.7);
+    width: calc(100vw*.7);
     margin: 4vw;
 }
 .flip-card {
@@ -170,6 +170,6 @@ body {
 }
 
 .shareLink {
-    margin-top:2vw;
-    margin-bottom:2vw;
+    margin-top:6vw;
+    margin-bottom:6vw;
 }
