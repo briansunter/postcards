@@ -23,12 +23,11 @@ function App() {
     to: string;
     address: string;
     sender: string;
+    isDefaultCard: boolean;
   }
 
-  let isDefaultCard = true;
   const messagePlaceholder =
     "This is the Internet version of sending a postcard home. Use this to send and receive unique flippable postcards. Click on any of these text fields or the map to edit them. Click on the card to flip it.";
-  let urlData: URLData;
   const defaultUrlData: URLData = {
     frontImage: "https://i.imgur.com/TOpuoX2.jpg",
     latitude: 42.3528,
@@ -37,24 +36,41 @@ function App() {
     to: "",
     address: "",
     sender: "",
+    isDefaultCard: true,
   };
-  try {
-    urlData = JSON.parse(urlDataString);
-    isDefaultCard = false;
-  } catch (e) {
-    urlData = defaultUrlData;
-    console.log("could not parse data", e);
-  }
 
   const [flip, setFlip] = useState(true);
 
-  const [state, setState] = useState(urlData);
+  const [state, setState] = useState(defaultUrlData);
+
+  useEffect(() => {
+    try {
+      const urlData: URLData = JSON.parse(urlDataString);
+      setState({ ...urlData, isDefaultCard: false });
+    } catch (e) {
+      console.log("could not parse data", e);
+    }
+  }, [urlDataString]);
+
+  const isDefaultCard = state.isDefaultCard;
+
+  useEffect(() => {
+    if (isDefaultCard) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        setState((s) => ({
+          ...s,
+          longitude: position.coords.longitude,
+          latitude: position.coords.latitude,
+        }));
+      });
+    }
+  }, [isDefaultCard]);
 
   const alreadySeenTutorial =
     localStorage.getItem("pc:seenTutorial") === "true";
 
   const [tutorialOpen, setTutorialOpen] = useState(
-    isDefaultCard && !alreadySeenTutorial
+    state.isDefaultCard && !alreadySeenTutorial
   );
 
   const showTutorial = (shouldShow: boolean) => {
@@ -128,18 +144,6 @@ function App() {
 
   const cardData = btoa(JSON.stringify(state));
 
-  useEffect(() => {
-    if (isDefaultCard) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        setState({
-          ...state,
-          longitude: position.coords.longitude,
-          latitude: position.coords.latitude,
-        });
-      });
-    }
-  });
-
   return (
     <div className="App" data-testid="home">
       <a href="./" className="title">
@@ -165,7 +169,7 @@ function App() {
           >
             <div className="flip-card-front">
               <img className="front-img" src={state.frontImage} alt="Avatar" />
-              {isDefaultCard && (
+              {state.isDefaultCard && (
                 <input
                   type="text"
                   className="frontImgInput"
@@ -183,7 +187,7 @@ function App() {
             </div>
             <div className="flip-card-back">
               <div className="left-content">
-                {isDefaultCard ? (
+                {state.isDefaultCard ? (
                   <textarea
                     className="writing"
                     placeholder={messagePlaceholder}
@@ -227,7 +231,7 @@ function App() {
                   </Map>
                 </div>
                 <div className="addressBox">
-                  {isDefaultCard ? (
+                  {state.isDefaultCard ? (
                     <input
                       type="text"
                       className="address"
@@ -243,7 +247,7 @@ function App() {
                   ) : (
                     <p className="address">{state.to}</p>
                   )}
-                  {isDefaultCard ? (
+                  {state.isDefaultCard ? (
                     <input
                       type="text"
                       className="address"
@@ -259,7 +263,7 @@ function App() {
                   ) : (
                     <p className="address">{state.address}</p>
                   )}
-                  {isDefaultCard ? (
+                  {state.isDefaultCard ? (
                     <input
                       type="text"
                       className="address"
@@ -281,7 +285,7 @@ function App() {
           </div>
         </div>
       </div>
-      {isDefaultCard && (
+      {state.isDefaultCard && (
         <div className="shareLink">
           <label>
             Share Link:
@@ -298,7 +302,7 @@ function App() {
           </label>
         </div>
       )}
-      {!isDefaultCard ? (
+      {!state.isDefaultCard ? (
         <a className="makeOwnButton" href="./">
           Make your own
         </a>
