@@ -1,8 +1,7 @@
-import React, { useEffect, RefObject, createRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-import { Map, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import { LatLngTuple } from "leaflet";
-import Tour from "reactour";
 
 import "leaflet/dist/leaflet.css";
 
@@ -12,19 +11,28 @@ function sleep(time: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
 
+interface URLData {
+  frontImage: string;
+  latitude: number;
+  longitude: number;
+  message: string;
+  to: string;
+  address: string;
+  sender: string;
+  isDefaultCard: boolean;
+}
+
+function MapUpdater({ position }: { position: LatLngTuple }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(position);
+  }, [map, position]);
+  return null;
+}
+
 function App() {
   const urlParams = new URLSearchParams(window.location.search);
   const urlDataString = atob(urlParams.get("card") || "");
-  interface URLData {
-    frontImage: string;
-    latitude: number;
-    longitude: number;
-    message: string;
-    to: string;
-    address: string;
-    sender: string;
-    isDefaultCard: boolean;
-  }
 
   const messagePlaceholder =
     "This is the Internet version of sending a postcard home. Use this to send and receive unique flippable postcards. Click on any of these text fields or the map to edit them. Click on the card to flip it.";
@@ -139,10 +147,34 @@ function App() {
       },
     },
   ];
-  const linkTextRef: RefObject<HTMLInputElement> = createRef();
-  const imageTextRef: RefObject<HTMLInputElement> = createRef();
+
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const linkTextRef = useRef<HTMLInputElement>(null);
+  const imageTextRef = useRef<HTMLInputElement>(null);
 
   const cardData = btoa(JSON.stringify(state));
+
+  const handleNextStep = () => {
+    if (currentStep < steps.length - 1) {
+      steps[currentStep].action?.();
+      setCurrentStep(currentStep + 1);
+    } else {
+      showTutorial(false);
+      setCurrentStep(0);
+    }
+  };
+
+  const handlePrevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleCloseTutorial = () => {
+    showTutorial(false);
+    setCurrentStep(0);
+  };
 
   return (
     <div className="App" data-testid="home">
@@ -152,13 +184,32 @@ function App() {
       <meta property="og:title" content="PostcardPop Card" />
       <meta property="og:image" content={state.frontImage} />
 
-      <Tour
-        closeWithMask={false}
-        steps={steps}
-        isOpen={tutorialOpen}
-        lastStepNextButton={<button className="makeOwnButton">Done!</button>}
-        onRequestClose={() => showTutorial(false)}
-      />
+      {tutorialOpen && (
+        <div className="tutorial-overlay">
+          <div className="tutorial-content">
+            <button className="tutorial-close" onClick={handleCloseTutorial}>
+              ×
+            </button>
+            <div className="tutorial-text">{steps[currentStep].content}</div>
+            <div className="tutorial-buttons">
+              {currentStep > 0 && (
+                <button onClick={handlePrevStep}>Previous</button>
+              )}
+              {currentStep < steps.length - 1 ? (
+                <button onClick={handleNextStep}>Next</button>
+              ) : (
+                <button className="makeOwnButton" onClick={handleCloseTutorial}>
+                  Done!
+                </button>
+              )}
+            </div>
+            <div className="tutorial-progress">
+              Step {currentStep + 1} of {steps.length}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="post-card">
         <div className="flip-card">
           <div
@@ -207,28 +258,26 @@ function App() {
               <div className="right-content">
                 <div
                   className="stamp-container"
-                  onClick={(e: any) => {
+                  onClick={(e: React.MouseEvent) => {
                     e.preventDefault();
                     e.stopPropagation();
                   }}
                 >
-                  <Map
+                  <MapContainer
                     className="stamp"
                     id="mapId"
                     center={position}
                     zoom={9}
                     attributionControl={false}
-                    onMoveEnd={(e: any) => {
-                      const { lat, lng } = e.target.getCenter();
-                      setState({ ...state, latitude: lat, longitude: lng });
-                    }}
                     zoomControl={false}
+                    style={{ height: "100%", width: "100%" }}
                   >
+                    <MapUpdater position={position} />
                     <TileLayer
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                       attribution=""
                     />
-                  </Map>
+                  </MapContainer>
                 </div>
                 <div className="addressBox">
                   {state.isDefaultCard ? (
@@ -308,7 +357,7 @@ function App() {
                 className="shareLink"
                 ref={linkTextRef}
                 value={`${window.location.href}?card=${cardData}`}
-                onClick={(e: any) => {
+                onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
                   linkTextRef.current?.select();
                 }}
