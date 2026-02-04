@@ -25,8 +25,30 @@ interface URLData {
 function MapUpdater({ position }: { position: LatLngTuple }) {
   const map = useMap();
   useEffect(() => {
-    map.setView(position);
+    map.setView(position, 9);
   }, [map, position]);
+  return null;
+}
+
+// Geocoding function using Nominatim
+async function geocodeAddress(address: string): Promise<{ lat: number; lon: number } | null> {
+  if (!address.trim()) return null;
+  
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`
+    );
+    const data = await response.json();
+    
+    if (data && data.length > 0) {
+      return {
+        lat: parseFloat(data[0].lat),
+        lon: parseFloat(data[0].lon)
+      };
+    }
+  } catch (error) {
+    console.error("Geocoding error:", error);
+  }
   return null;
 }
 
@@ -35,9 +57,9 @@ function App() {
   const urlDataString = atob(urlParams.get("card") || "");
 
   const messagePlaceholder =
-    "This is the Internet version of sending a postcard home. Use this to send and receive unique flippable postcards. Click on any of these text fields or the map to edit them. Click on the card to flip it.";
+    "Write your message here...";
   const defaultUrlData: URLData = {
-    frontImage: "https://i.imgur.com/TOpuoX2.jpg",
+    frontImage: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
     latitude: 42.3528,
     longitude: -83.1421,
     message: "",
@@ -48,6 +70,8 @@ function App() {
   };
 
   const [flip, setFlip] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const [isGeocoding, setIsGeocoding] = useState(false);
 
   const [state, setState] = useState(defaultUrlData);
 
@@ -76,9 +100,16 @@ function App() {
 
   const alreadySeenTutorial =
     localStorage.getItem("pc:seenTutorial") === "true";
+  
+  const alreadySeenFlipHint =
+    localStorage.getItem("pc:seenFlipHint") === "true";
 
   const [tutorialOpen, setTutorialOpen] = useState(
     state.isDefaultCard && !alreadySeenTutorial
+  );
+  
+  const [flipHintOpen, setFlipHintOpen] = useState(
+    !state.isDefaultCard && !alreadySeenFlipHint
   );
 
   const showTutorial = (shouldShow: boolean) => {
@@ -89,31 +120,29 @@ function App() {
   const position: LatLngTuple = [state.latitude, state.longitude];
   const steps = [
     {
-      selector: ".App",
       content:
-        "Welcome to PostcardPop, a way of making digital postcards to send to your friends. This is the tutorial. Click the next arrow to go to the next tutorial step or click 'x' to exit.",
+        "Welcome to PostcardPop! Create beautiful digital postcards to share with friends and family. Let's take a quick tour.",
       action: () => {
         setFlip(true);
       },
     },
     {
-      selector: ".frontImgInput",
       content:
-        "This is where you can select a nice cover image for your postcard. Make sure sure your image site supports embedding. I recommend https://imgur.com.",
+        "Click on the front image to change it. Use any image URL - we recommend Unsplash or Imgur for best results.",
       action: () => {
         setFlip(true);
       },
     },
     {
-      selector: ".front-img",
-      content: "Tap anywhere on the card to flip.",
+      content:
+        "Tap anywhere on the postcard to flip it over and see the back.",
       action: () => {
         setFlip(true);
       },
     },
     {
-      selector: ".left-content",
-      content: "This is the area to write your message.",
+      content:
+        "Write your personal message here. Make it heartfelt and memorable!",
       action: () => {
         setFlip(false);
         sleep(1000).then(() => {
@@ -123,25 +152,22 @@ function App() {
       },
     },
     {
-      selector: ".stamp",
       content:
-        "Instead of a 'stamp', use a small map of your current location from OpenStreetMaps. You can drag to change the location. You can also update the latitude and longitude boxes below",
+        "Type a city or address in the Location field and press Enter to update the map. Or drag the map to fine-tune the location.",
       action: () => {
         setFlip(false);
       },
     },
     {
-      selector: ".address",
       content:
-        "Add the person you're sending the postcard to and their city here.",
+        "Add the recipient's name and your name to personalize the postcard.",
       action: () => {
         setFlip(false);
       },
     },
     {
-      selector: ".shareLink",
       content:
-        "This is the link to share your postcard. Send it to someone so they can view it.",
+        "When you're done, copy the share link and send it to someone special!",
       action: () => {
         setFlip(false);
       },
@@ -176,193 +202,311 @@ function App() {
     setCurrentStep(0);
   };
 
+  const handleCloseFlipHint = () => {
+    setFlipHintOpen(false);
+    localStorage.setItem("pc:seenFlipHint", "true");
+  };
+
+  const handleCopyLink = () => {
+    if (linkTextRef.current) {
+      linkTextRef.current.select();
+      navigator.clipboard.writeText(linkTextRef.current.value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  // Handle address input with geocoding
+  const handleAddressChange = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const address = e.currentTarget.value;
+      if (address.trim()) {
+        setIsGeocoding(true);
+        const result = await geocodeAddress(address);
+        if (result) {
+          setState((s) => ({
+            ...s,
+            latitude: result.lat,
+            longitude: result.lon,
+          }));
+        }
+        setIsGeocoding(false);
+      }
+    }
+  };
+
   return (
     <div className="App" data-testid="home">
-      <a href="./" className="title">
-        ✉PostcardPop
-      </a>
       <meta property="og:title" content="PostcardPop Card" />
       <meta property="og:image" content={state.frontImage} />
 
       {tutorialOpen && (
-        <div className="tutorial-overlay">
-          <div className="tutorial-content">
+        <div className="tutorial-overlay" onClick={handleCloseTutorial}>
+          <div className="tutorial-content" onClick={(e) => e.stopPropagation()}>
             <button className="tutorial-close" onClick={handleCloseTutorial}>
               ×
             </button>
+            
+            <div className="tutorial-step">
+              <div className="tutorial-step-number">{currentStep + 1}</div>
+              <span className="tutorial-step-label">Step {currentStep + 1} of {steps.length}</span>
+            </div>
+            
             <div className="tutorial-text">{steps[currentStep].content}</div>
+            
             <div className="tutorial-buttons">
-              {currentStep > 0 && (
-                <button onClick={handlePrevStep}>Previous</button>
-              )}
-              {currentStep < steps.length - 1 ? (
-                <button onClick={handleNextStep}>Next</button>
+              {currentStep > 0 ? (
+                <button className="tutorial-btn tutorial-btn-prev" onClick={handlePrevStep}>
+                  ← Back
+                </button>
               ) : (
-                <button className="makeOwnButton" onClick={handleCloseTutorial}>
-                  Done!
+                <div />
+              )}
+              
+              {currentStep < steps.length - 1 ? (
+                <button className="tutorial-btn tutorial-btn-next" onClick={handleNextStep}>
+                  Next →
+                </button>
+              ) : (
+                <button className="tutorial-btn tutorial-btn-done" onClick={handleCloseTutorial}>
+                  Get Started ✨
                 </button>
               )}
             </div>
+            
             <div className="tutorial-progress">
-              Step {currentStep + 1} of {steps.length}
+              {steps.map((_, idx) => (
+                <div
+                  key={idx}
+                  className={`tutorial-progress-dot ${idx <= currentStep ? 'active' : ''}`}
+                />
+              ))}
             </div>
           </div>
         </div>
       )}
 
-      <div className="post-card">
-        <div className="flip-card">
-          <div
-            onClick={() => setFlip(!flip)}
-            className={`flip-card-inner ${
-              flip ? "flip-card-togggle-on" : "flip-card-toggle-off"
-            }`}
-          >
-            <div className="flip-card-front">
-              <img className="front-img" src={state.frontImage} alt="Avatar" />
-              {state.isDefaultCard && (
-                <input
-                  type="text"
-                  className="frontImgInput"
-                  value={state.frontImage}
-                  ref={imageTextRef}
-                  onChange={(e) => {
-                    imageTextRef.current?.select();
-                    setState({ ...state, frontImage: e.target.value });
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                />
-              )}
+      {/* Simple flip hint for received postcards */}
+      {flipHintOpen && (
+        <div className="tutorial-overlay" onClick={handleCloseFlipHint}>
+          <div className="tutorial-content flip-hint-content" onClick={(e) => e.stopPropagation()}>
+            <button className="tutorial-close" onClick={handleCloseFlipHint}>
+              ×
+            </button>
+            
+            <div className="flip-hint-icon-large">🎴</div>
+            
+            <div className="tutorial-text" style={{ textAlign: 'center', fontSize: '1.25rem' }}>
+              <strong>You've received a postcard!</strong><br /><br />
+              Click the card to flip it over and read the message.
             </div>
-            <div className="flip-card-back">
-              <div className="left-content">
-                {state.isDefaultCard ? (
-                  <textarea
-                    className="writing"
-                    placeholder={messagePlaceholder}
-                    value={state.message}
-                    onChange={(e) => {
-                      setState({ ...state, message: e.target.value });
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  />
-                ) : (
-                  <p className="writing">{state.message}</p>
+            
+            <div className="tutorial-buttons" style={{ justifyContent: 'center' }}>
+              <button className="tutorial-btn tutorial-btn-done" onClick={handleCloseFlipHint}>
+                Got it! 👍
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <header className="header">
+        <a href="./" className="title">
+          <span className="title-icon">✉</span>
+          PostcardPop
+        </a>
+        <p className="subtitle">Create & share beautiful digital postcards</p>
+      </header>
+
+      <div className="post-card-container">
+        <div className="flip-card" onClick={() => setFlip(!flip)}>
+          <div className={`flip-card-inner ${flip ? "flip-card-toggle-on" : "flip-card-toggle-off"}`}>
+            {/* Front Side */}
+            <div className="flip-card-front">
+              <div className="front-image-container">
+                <img className="front-img" src={state.frontImage} alt="Postcard front" />
+                {state.isDefaultCard && (
+                  <>
+                    <input
+                      type="text"
+                      className="front-image-input"
+                      value={state.frontImage}
+                      ref={imageTextRef}
+                      placeholder="Paste image URL here..."
+                      onChange={(e) => {
+                        setState({ ...state, frontImage: e.target.value });
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    />
+                    <div className="image-hint">💡 Click to edit image URL</div>
+                  </>
                 )}
               </div>
-              <div className="middleLine" />
-              <div className="right-content">
-                <div
-                  className="stamp-container"
-                  onClick={(e: React.MouseEvent) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                >
-                  <MapContainer
-                    className="stamp"
-                    id="mapId"
-                    center={position}
-                    zoom={9}
-                    attributionControl={false}
-                    zoomControl={false}
-                    style={{ height: "100%", width: "100%" }}
-                  >
-                    <MapUpdater position={position} />
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution=""
-                    />
-                  </MapContainer>
+            </div>
+
+            {/* Back Side */}
+            <div className="flip-card-back">
+              <div className="back-content">
+                {/* Left Section - Message */}
+                <div className="left-section">
+                  <div className="message-area">
+                    <label className="message-label">Message</label>
+                    {state.isDefaultCard ? (
+                      <textarea
+                        className="message-textarea"
+                        placeholder={messagePlaceholder}
+                        value={state.message}
+                        onChange={(e) => {
+                          setState({ ...state, message: e.target.value });
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      />
+                    ) : (
+                      <div className="message-display">{state.message || "No message written"}</div>
+                    )}
+                  </div>
                 </div>
-                <div className="addressBox">
-                  {state.isDefaultCard ? (
-                    <input
-                      type="text"
-                      className="address"
-                      placeholder="Recipient name"
-                      value={state.to}
-                      onChange={(e) => {
-                        setState({ ...state, to: e.target.value });
-                      }}
-                      onClick={(e) => {
+
+                <div className="divider" />
+
+                {/* Right Section - Stamp & Address */}
+                <div className="right-section">
+                  <div className="stamp-section">
+                    <div 
+                      className="stamp-container"
+                      onClick={(e: React.MouseEvent) => {
+                        e.preventDefault();
                         e.stopPropagation();
                       }}
-                    />
-                  ) : (
-                    <p className="address">{state.to}</p>
-                  )}
-                  {state.isDefaultCard ? (
-                    <input
-                      type="text"
-                      className="address"
-                      placeholder="Recipient city"
-                      value={state.address}
-                      onChange={(e) => {
-                        setState({ ...state, address: e.target.value });
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    />
-                  ) : (
-                    <p className="address">{state.address}</p>
-                  )}
-                  {state.isDefaultCard ? (
-                    <input
-                      type="text"
-                      className="address"
-                      placeholder="Your name"
-                      value={state.sender}
-                      onChange={(e) => {
-                        setState({ ...state, sender: e.target.value });
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    />
-                  ) : (
-                    <p className="address">{state.sender}</p>
-                  )}
+                    >
+                      <div className="stamp-border" />
+                      <MapContainer
+                        className="stamp-map"
+                        center={position}
+                        zoom={9}
+                        attributionControl={false}
+                        zoomControl={false}
+                        scrollWheelZoom={false}
+                      >
+                        <MapUpdater position={position} />
+                        <TileLayer
+                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                          attribution=""
+                        />
+                      </MapContainer>
+                      {isGeocoding && (
+                        <div className="stamp-loading">
+                          <div className="loading-spinner" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="address-section">
+                    {state.isDefaultCard ? (
+                      <input
+                        type="text"
+                        className="address-input"
+                        placeholder="To: Recipient name"
+                        value={state.to}
+                        onChange={(e) => {
+                          setState({ ...state, to: e.target.value });
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      />
+                    ) : (
+                      <div className="address-display">{state.to && `To: ${state.to}`}</div>
+                    )}
+
+                    {state.isDefaultCard ? (
+                      <div className="location-input-wrapper">
+                        <input
+                          type="text"
+                          className="address-input"
+                          placeholder="Location (type city & press Enter)"
+                          value={state.address}
+                          onChange={(e) => {
+                            setState({ ...state, address: e.target.value });
+                          }}
+                          onKeyDown={handleAddressChange}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                        />
+                        <span className="location-hint">↵</span>
+                      </div>
+                    ) : (
+                      <div className="address-display">{state.address}</div>
+                    )}
+
+                    {state.isDefaultCard ? (
+                      <input
+                        type="text"
+                        className="address-input"
+                        placeholder="From: Your name"
+                        value={state.sender}
+                        onChange={(e) => {
+                          setState({ ...state, sender: e.target.value });
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      />
+                    ) : (
+                      <div className="address-display">{state.sender && `From: ${state.sender}`}</div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        {!state.isDefaultCard ? (
-          <a className="makeOwnButton" href="./">
-            Make your own
-          </a>
-        ) : (
-          <div>
-            <a
-              className="makeOwnButton"
-              href="./"
-              onClick={() => showTutorial(true)}
-            >
-              Show Tutorial
+
+        <div className="flip-hint">
+          Click card to flip
+        </div>
+      </div>
+
+      <div className="actions">
+        <div className="action-row">
+          {!state.isDefaultCard ? (
+            <a className="btn btn-primary" href="./">
+              ✨ Create Your Own
             </a>
-          </div>
-        )}
+          ) : (
+            <button className="btn btn-secondary" onClick={() => showTutorial(true)}>
+              ❓ Show Tutorial
+            </button>
+          )}
+        </div>
+
         {state.isDefaultCard && (
-          <div>
-            <label>
-              Share Link:
+          <div className="share-section">
+            <label className="share-label">Share your postcard</label>
+            <div className="share-input-wrapper">
               <input
                 type="text"
-                className="shareLink"
+                className="share-input"
                 ref={linkTextRef}
-                value={`${window.location.href}?card=${cardData}`}
+                value={`${window.location.origin}${window.location.pathname}?card=${cardData}`}
+                readOnly
                 onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
-                  linkTextRef.current?.select();
                 }}
               />
-            </label>
+              <button 
+                className={`btn-copy ${copied ? 'copied' : ''}`}
+                onClick={handleCopyLink}
+              >
+                {copied ? '✓ Copied!' : '📋 Copy Link'}
+              </button>
+            </div>
           </div>
         )}
       </div>
