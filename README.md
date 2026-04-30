@@ -1,21 +1,45 @@
-# Github Pages React Actions
-Github actions for deploying Create React App to GitHub Pages.
+# PostcardPop
 
-## Features
-* Run tests on PR
-* Runs Lighthouse tests on PR with test artifacts
-* Runs Cypress tests with videos and screenshot test artifacts
-* Configues Github Pages
-* Deploys on push to master branch
+Create & share beautiful digital postcards.
 
-## Usage
-1. Copy `.github` folder contents to your project.
-1. Setup `homepage` to GitHub Pages URL
-1. Create personal access token with `repo` permissions in `Settings > Developer Settings > Personal Access Tokens`
-1. Add personal access token as secret with name  `ACCESS_TOKEN`
+## Tech Stack
 
-## Badges
+- **React 19** + TypeScript
+- **Vite** — build tool and dev server
+- **Bun** — package manager and runtime
+- **Vitest** — unit testing
+- **Cypress** — E2E testing
+- **Leaflet** — interactive maps via react-leaflet
 
-![Lighthouse](https://github.com/briansunter/github-pages-react-actions/workflows/Lighthouse/badge.svg)
-![Unit Tests](https://github.com/briansunter/github-pages-react-actions/workflows/Run%20npm%20tests%20on%20PR/badge.svg)
-![Cypress Tests](https://github.com/briansunter/github-pages-react-actions/workflows/Cypress/badge.svg)
+## Development
+
+```bash
+bun install
+bun run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173)
+
+## Build
+
+```bash
+bun run build
+```
+
+Output goes to `build/` directory.
+
+## Test
+
+```bash
+bun run test        # run once
+bun run test:watch  # watch mode
+```
+
+## CI/CD
+
+GitHub Actions workflows for:
+
+- Building and deploying to GitHub Pages on push to `master`
+- Running unit tests on pull requests
+- Cypress E2E tests
+- Lighthouse performance audits

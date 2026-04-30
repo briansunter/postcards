@@ -1,25 +1,22 @@
-name: Run npm tests on PR
+name: Run tests on PR
 on: pull_request
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        persist-credentials: false
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
-    - name: Install
-      run: npm ci --legacy-peer-deps
+      - name: Install
+        run: bun install --frozen-lockfile
 
-    - name: build
-      run: npm run build
+      - name: Build
+        run: bun run build
 
-    - name: Test
-      run: npm run test -- --watchAll=false
+      - name: Test
+        run: bun run test
