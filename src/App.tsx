@@ -53,7 +53,33 @@ async function geocodeAddress(
 	return null;
 }
 
+function getTodayDateString(): string {
+	const now = new Date();
+	return `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
+}
+
+function useTheme() {
+	const [theme, setTheme] = useState<"light" | "dark">(() => {
+		const stored = localStorage.getItem("pc:theme");
+		if (stored === "light" || stored === "dark") return stored;
+		return window.matchMedia("(prefers-color-scheme: dark)").matches
+			? "dark"
+			: "light";
+	});
+
+	useEffect(() => {
+		document.documentElement.setAttribute("data-theme", theme);
+		localStorage.setItem("pc:theme", theme);
+	}, [theme]);
+
+	const toggleTheme = () => setTheme((t) => (t === "light" ? "dark" : "light"));
+
+	return { theme, toggleTheme };
+}
+
 function App() {
+	const { theme, toggleTheme } = useTheme();
+
 	const urlParams = new URLSearchParams(window.location.search);
 	const urlDataString = atob(urlParams.get("card") || "");
 
@@ -73,6 +99,7 @@ function App() {
 	const [flip, setFlip] = useState(true);
 	const [copied, setCopied] = useState(false);
 	const [isGeocoding, setIsGeocoding] = useState(false);
+	const [flipHintHidden, setFlipHintHidden] = useState(false);
 
 	const [state, setState] = useState(defaultUrlData);
 
@@ -116,6 +143,14 @@ function App() {
 	const showTutorial = (shouldShow: boolean) => {
 		setTutorialOpen(shouldShow);
 		localStorage.setItem("pc:seenTutorial", !shouldShow ? "true" : "false");
+	};
+
+	const handleFlip = () => {
+		setFlip(!flip);
+		if (!flipHintHidden) {
+			setFlipHintHidden(true);
+			localStorage.setItem("pc:seenFlipHint", "true");
+		}
 	};
 
 	const position: LatLngTuple = [state.latitude, state.longitude];
@@ -240,12 +275,22 @@ function App() {
 	return (
 		<div className="App" data-testid="home">
 			{tutorialOpen && (
-				<div className="tutorial-overlay" onClick={handleCloseTutorial}>
+				<div
+					className="tutorial-overlay"
+					onClick={handleCloseTutorial}
+					role="dialog"
+					aria-modal="true"
+					aria-label="Tutorial"
+				>
 					<div
 						className="tutorial-content"
 						onClick={(e) => e.stopPropagation()}
 					>
-						<button className="tutorial-close" onClick={handleCloseTutorial}>
+						<button
+							className="tutorial-close"
+							onClick={handleCloseTutorial}
+							aria-label="Close tutorial"
+						>
 							×
 						</button>
 
@@ -287,7 +332,7 @@ function App() {
 							)}
 						</div>
 
-						<div className="tutorial-progress">
+						<div className="tutorial-progress" role="progressbar">
 							{steps.map((_, idx) => (
 								<div
 									key={idx}
@@ -301,12 +346,22 @@ function App() {
 
 			{/* Simple flip hint for received postcards */}
 			{flipHintOpen && (
-				<div className="tutorial-overlay" onClick={handleCloseFlipHint}>
+				<div
+					className="tutorial-overlay"
+					onClick={handleCloseFlipHint}
+					role="dialog"
+					aria-modal="true"
+					aria-label="Flip hint"
+				>
 					<div
 						className="tutorial-content flip-hint-content"
 						onClick={(e) => e.stopPropagation()}
 					>
-						<button className="tutorial-close" onClick={handleCloseFlipHint}>
+						<button
+							className="tutorial-close"
+							onClick={handleCloseFlipHint}
+							aria-label="Close hint"
+						>
 							×
 						</button>
 
@@ -314,7 +369,7 @@ function App() {
 
 						<div
 							className="tutorial-text"
-							style={{ textAlign: "center", fontSize: "1.25rem" }}
+							style={{ textAlign: "center", fontSize: "1.2rem" }}
 						>
 							<strong>You've received a postcard!</strong>
 							<br />
@@ -338,6 +393,14 @@ function App() {
 			)}
 
 			<header className="header">
+				<button
+					className="theme-toggle"
+					onClick={toggleTheme}
+					aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+					title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+				>
+					{theme === "light" ? "🌙" : "☀️"}
+				</button>
 				<a href="./" className="title">
 					<span className="title-icon">✉</span>
 					PostcardPop
@@ -346,13 +409,25 @@ function App() {
 			</header>
 
 			<div className="post-card-container">
-				<div className="flip-card" onClick={() => setFlip(!flip)}>
+				<div
+					className="flip-card"
+					onClick={handleFlip}
+					role="button"
+					aria-label="Click to flip postcard"
+					tabIndex={0}
+					onKeyDown={(e) => {
+						if (e.key === "Enter" || e.key === " ") {
+							e.preventDefault();
+							handleFlip();
+						}
+					}}
+				>
 					<div
 						className={`flip-card-inner ${flip ? "flip-card-toggle-on" : "flip-card-toggle-off"}`}
 					>
 						{/* Front Side */}
 						<div className="flip-card-front">
-							<div className="front-image-container">
+							<figure className="front-image-container">
 								<img
 									className="front-img"
 									src={state.frontImage}
@@ -372,15 +447,21 @@ function App() {
 											onClick={(e) => {
 												e.stopPropagation();
 											}}
+											aria-label="Postcard image URL"
 										/>
-										<div className="image-hint">💡 Click to edit image URL</div>
+										<div className="image-hint">
+											💡 Click to edit image URL
+										</div>
 									</>
 								)}
-							</div>
+							</figure>
 						</div>
 
 						{/* Back Side */}
 						<div className="flip-card-back">
+							<div className="postcard-header">Postcard</div>
+							<div className="airmail-label">Air Mail</div>
+
 							<div className="back-content">
 								{/* Left Section - Message */}
 								<div className="left-section">
@@ -397,6 +478,7 @@ function App() {
 												onClick={(e) => {
 													e.stopPropagation();
 												}}
+												aria-label="Your message"
 											/>
 										) : (
 											<div className="message-display">
@@ -433,6 +515,14 @@ function App() {
 													attribution=""
 												/>
 											</MapContainer>
+											{/* Postmark overlay */}
+											<div className="stamp-postmark">
+												<div className="postmark-circle">
+													<span className="postmark-date">
+														{getTodayDateString()}
+													</span>
+												</div>
+											</div>
 											{isGeocoding && (
 												<div className="stamp-loading">
 													<div className="loading-spinner" />
@@ -442,6 +532,9 @@ function App() {
 									</div>
 
 									<div className="address-section">
+										{state.isDefaultCard && (
+											<span className="address-label">Address</span>
+										)}
 										{state.isDefaultCard ? (
 											<input
 												type="text"
@@ -454,6 +547,7 @@ function App() {
 												onClick={(e) => {
 													e.stopPropagation();
 												}}
+												aria-label="Recipient name"
 											/>
 										) : (
 											<div className="address-display">
@@ -469,17 +563,23 @@ function App() {
 													placeholder="Location (type city & press Enter)"
 													value={state.address}
 													onChange={(e) => {
-														setState({ ...state, address: e.target.value });
+														setState({
+															...state,
+															address: e.target.value,
+														});
 													}}
 													onKeyDown={handleAddressChange}
 													onClick={(e) => {
 														e.stopPropagation();
 													}}
+													aria-label="Location"
 												/>
 												<span className="location-hint">↵</span>
 											</div>
 										) : (
-											<div className="address-display">{state.address}</div>
+											<div className="address-display">
+												{state.address}
+											</div>
 										)}
 
 										{state.isDefaultCard ? (
@@ -489,11 +589,15 @@ function App() {
 												placeholder="From: Your name"
 												value={state.sender}
 												onChange={(e) => {
-													setState({ ...state, sender: e.target.value });
+													setState({
+														...state,
+														sender: e.target.value,
+													});
 												}}
 												onClick={(e) => {
 													e.stopPropagation();
 												}}
+												aria-label="Sender name"
 											/>
 										) : (
 											<div className="address-display">
@@ -507,7 +611,9 @@ function App() {
 					</div>
 				</div>
 
-				<div className="flip-hint">Click card to flip</div>
+				<div className={`flip-hint ${flipHintHidden ? "hidden" : ""}`}>
+					Click card to flip
+				</div>
 			</div>
 
 			<div className="actions">
@@ -539,10 +645,12 @@ function App() {
 								onClick={(e: React.MouseEvent) => {
 									e.stopPropagation();
 								}}
+								aria-label="Share link"
 							/>
 							<button
 								className={`btn-copy ${copied ? "copied" : ""}`}
 								onClick={handleCopyLink}
+								aria-label={copied ? "Link copied" : "Copy link"}
 							>
 								{copied ? "✓ Copied!" : "📋 Copy Link"}
 							</button>
