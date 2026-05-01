@@ -32,7 +32,7 @@ Object.defineProperty(window, "matchMedia", {
 const mockGeolocation = {
 	getCurrentPosition: vi.fn(),
 };
-Object.defineProperty(global, "navigator", {
+Object.defineProperty(globalThis, "navigator", {
 	value: { geolocation: mockGeolocation },
 	writable: true,
 });
