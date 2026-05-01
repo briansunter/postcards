@@ -53,11 +53,6 @@ async function geocodeAddress(
 	return null;
 }
 
-function getTodayDateString(): string {
-	const now = new Date();
-	return `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
-}
-
 function useTheme() {
 	const [theme, setTheme] = useState<"light" | "dark">(() => {
 		const stored = localStorage.getItem("pc:theme");
@@ -96,7 +91,7 @@ function App() {
 		isDefaultCard: true,
 	};
 
-	const [flip, setFlip] = useState(true);
+	const [flip, setFlip] = useState(false);
 	const [copied, setCopied] = useState(false);
 	const [isGeocoding, setIsGeocoding] = useState(false);
 	const [flipHintHidden, setFlipHintHidden] = useState(false);
@@ -392,15 +387,16 @@ function App() {
 				</div>
 			)}
 
+			<button
+				className="theme-toggle"
+				onClick={toggleTheme}
+				aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+				title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+			>
+				{theme === "light" ? "🌙" : "☀️"}
+			</button>
+
 			<header className="header">
-				<button
-					className="theme-toggle"
-					onClick={toggleTheme}
-					aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-					title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-				>
-					{theme === "light" ? "🌙" : "☀️"}
-				</button>
 				<a href="./" className="title">
 					<span className="title-icon">✉</span>
 					PostcardPop
@@ -415,12 +411,6 @@ function App() {
 					role="button"
 					aria-label="Click to flip postcard"
 					tabIndex={0}
-					onKeyDown={(e) => {
-						if (e.key === "Enter" || e.key === " ") {
-							e.preventDefault();
-							handleFlip();
-						}
-					}}
 				>
 					<div
 						className={`flip-card-inner ${flip ? "flip-card-toggle-on" : "flip-card-toggle-off"}`}
@@ -433,7 +423,7 @@ function App() {
 									src={state.frontImage}
 									alt="Postcard front"
 								/>
-								{state.isDefaultCard && (
+								{state.isDefaultCard && !flip && (
 									<>
 										<input
 											type="text"
@@ -453,15 +443,14 @@ function App() {
 											💡 Click to edit image URL
 										</div>
 									</>
-								)}
+								)
+								}
 							</figure>
 						</div>
 
 						{/* Back Side */}
 						<div className="flip-card-back">
-							<div className="postcard-header">Postcard</div>
-							<div className="airmail-label">Air Mail</div>
-
+							{flip && (
 							<div className="back-content">
 								{/* Left Section - Message */}
 								<div className="left-section">
@@ -515,14 +504,6 @@ function App() {
 													attribution=""
 												/>
 											</MapContainer>
-											{/* Postmark overlay */}
-											<div className="stamp-postmark">
-												<div className="postmark-circle">
-													<span className="postmark-date">
-														{getTodayDateString()}
-													</span>
-												</div>
-											</div>
 											{isGeocoding && (
 												<div className="stamp-loading">
 													<div className="loading-spinner" />
@@ -607,6 +588,7 @@ function App() {
 									</div>
 								</div>
 							</div>
+							)}
 						</div>
 					</div>
 				</div>
