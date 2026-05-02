@@ -6,10 +6,6 @@ import "leaflet/dist/leaflet.css";
 
 import "./App.css";
 
-function sleep(time: number): Promise<void> {
-	return new Promise((resolve) => setTimeout(resolve, time));
-}
-
 interface URLData {
 	frontImage: string;
 	latitude: number;
@@ -26,6 +22,19 @@ function MapUpdater({ position }: { position: LatLngTuple }) {
 	useEffect(() => {
 		map.setView(position, 9);
 	}, [map, position]);
+
+	useEffect(() => {
+		const invalidate = () => {
+			// Tiles can mis-render after viewport size or orientation change.
+			setTimeout(() => map.invalidateSize(), 150);
+		};
+		window.addEventListener("resize", invalidate);
+		window.addEventListener("orientationchange", invalidate);
+		return () => {
+			window.removeEventListener("resize", invalidate);
+			window.removeEventListener("orientationchange", invalidate);
+		};
+	}, [map]);
 	return null;
 }
 
@@ -152,45 +161,16 @@ function App() {
 	const steps = [
 		{
 			content:
-				"Welcome to PostcardPop! Create beautiful digital postcards to share with friends and family. Let's take a quick tour.",
+				"Welcome to PostcardPop! Pick a front image, then tap the card to flip it over.",
+			// flip to back so the next step's content matches what's visible
 			action: () => {
 				setFlip(true);
 			},
 		},
 		{
 			content:
-				"Click on the front image to change it. Use any image URL - we recommend Unsplash or Imgur for best results.",
-			action: () => {
-				setFlip(true);
-			},
-		},
-		{
-			content: "Tap anywhere on the postcard to flip it over and see the back.",
-			action: () => {
-				setFlip(true);
-			},
-		},
-		{
-			content:
-				"Write your personal message here. Make it heartfelt and memorable!",
-			action: () => {
-				setFlip(false);
-				sleep(1000).then(() => {
-					showTutorial(false);
-					showTutorial(true);
-				});
-			},
-		},
-		{
-			content:
-				"Type a city or address in the Location field and press Enter to update the map. Or drag the map to fine-tune the location.",
-			action: () => {
-				setFlip(false);
-			},
-		},
-		{
-			content:
-				"Add the recipient's name and your name to personalize the postcard.",
+				"On the back, write your message and add a location, recipient, and your name.",
+			// flip back to front for the final step
 			action: () => {
 				setFlip(false);
 			},
@@ -440,7 +420,7 @@ function App() {
 											aria-label="Postcard image URL"
 										/>
 										<div className="image-hint">
-											💡 Click to edit image URL
+											💡 Tap to edit image URL
 										</div>
 									</>
 								)
@@ -594,7 +574,7 @@ function App() {
 				</div>
 
 				<div className={`flip-hint ${flipHintHidden ? "hidden" : ""}`}>
-					Click card to flip
+					Tap card to flip
 				</div>
 			</div>
 

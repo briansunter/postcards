@@ -86,15 +86,18 @@ p {
 	margin: 0;
 }
 
+html,
 body {
 	margin: 0;
 	font-family: var(--font-body);
 	color: var(--text);
 	min-height: 100vh;
+	min-height: 100dvh;
 	overflow-x: hidden;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	background: var(--bg);
+	-webkit-text-size-adjust: 100%;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -104,10 +107,13 @@ body {
 .App {
 	width: 100%;
 	min-height: 100vh;
+	min-height: 100dvh;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding: 2.5rem 1.5rem 4rem;
+	padding: max(2.5rem, env(safe-area-inset-top))
+		max(1.5rem, env(safe-area-inset-right)) max(4rem, env(safe-area-inset-bottom))
+		max(1.5rem, env(safe-area-inset-left));
 	background: linear-gradient(
 		175deg,
 		var(--bg) 0%,
@@ -277,10 +283,10 @@ body {
 /* Theme toggle — fixed top-right */
 .theme-toggle {
 	position: fixed;
-	top: 1rem;
-	right: 1rem;
-	width: 38px;
-	height: 38px;
+	top: max(1rem, env(safe-area-inset-top));
+	right: max(1rem, env(safe-area-inset-right));
+	width: 40px;
+	height: 40px;
 	border: 1px solid var(--border);
 	background: var(--glass);
 	backdrop-filter: blur(10px);
@@ -475,6 +481,7 @@ body {
 	width: 100%;
 	height: 100%;
 	gap: 1.25rem;
+	position: relative;
 }
 
 .left-section {
@@ -495,6 +502,8 @@ body {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
+	/* Leave room for the stamp pinned in the upper-right corner */
+	padding-top: 130px;
 }
 
 /* ── Message Area ── */
@@ -562,8 +571,12 @@ body {
 /* ── Stamp Section ── */
 
 .stamp-section {
+	position: absolute;
+	top: 0;
+	right: 0;
 	display: flex;
 	justify-content: flex-end;
+	z-index: 5;
 }
 
 .stamp-container {
@@ -575,6 +588,7 @@ body {
 	box-shadow: var(--shadow-md);
 	outline: 2.5px dashed var(--accent);
 	outline-offset: -2px;
+	background: var(--surface);
 }
 
 .stamp-border {
@@ -1033,71 +1047,78 @@ body {
    RESPONSIVE
    ═══════════════════════════════════════════════════════ */
 
+/* Tablet & smaller — portrait-ish */
 @media (max-width: 768px) {
 	.App {
-		padding: 1.5rem 0.75rem 3rem;
+		padding: max(1.25rem, env(safe-area-inset-top))
+			max(0.75rem, env(safe-area-inset-right))
+			max(2rem, env(safe-area-inset-bottom))
+			max(0.75rem, env(safe-area-inset-left));
 	}
 
 	.header {
-		margin-bottom: 1.75rem;
+		margin-bottom: 1.25rem;
+		gap: 0.1rem;
+	}
+
+	.subtitle {
+		font-size: 0.85rem;
 	}
 
 	.flip-card {
-		aspect-ratio: 1 / 1;
+		aspect-ratio: 1.4 / 1;
 	}
 
 	.flip-card-back {
-		padding: 1rem;
-	}
-
-	.back-content::before {
-		font-size: 0.45rem;
-		top: -0.15rem;
+		padding: 0.85rem 1rem;
 	}
 
 	.back-content {
-		flex-direction: column;
-		gap: 0.5rem;
-		padding-top: 0.4rem;
+		gap: 1rem;
 	}
 
-	.left-section {
-		min-height: 130px;
-		flex: none;
+	.message-label {
+		font-size: 1.05rem;
+		margin-bottom: 0.15rem;
 	}
 
-	.divider {
-		width: 100%;
-		height: 1px;
+	.message-textarea,
+	.message-display {
+		font-size: 0.85rem;
+		line-height: 1.55;
+		padding: 0.5rem 0.5rem;
 	}
 
 	.right-section {
-		flex-direction: column;
-		gap: 0.4rem;
-	}
-
-	.stamp-section {
-		display: flex;
-		justify-content: flex-end;
+		gap: 0.35rem;
+		padding-top: 100px;
 	}
 
 	.stamp-container {
-		width: 90px;
-		height: 105px;
+		width: 80px;
+		height: 94px;
 	}
 
-	.address-section {
-		gap: 0.15rem;
+	.address-label {
+		font-size: 0.85rem;
 	}
 
 	.address-input,
 	.address-display {
-		font-size: 0.85rem;
-		padding: 0.4rem 0.3rem;
+		font-size: 16px;
+		padding: 0.4rem 0.45rem;
+	}
+
+	.address-display {
+		font-size: 0.95rem;
 	}
 
 	.share-input-wrapper {
 		flex-direction: column;
+	}
+
+	.share-input {
+		font-size: 16px;
 	}
 
 	.share-section {
@@ -1107,60 +1128,249 @@ body {
 
 	.tutorial-content {
 		padding: 1.5rem;
-		max-height: 70vh;
+		max-height: 80vh;
+		max-height: 80dvh;
 	}
 
 	.front-image-input {
-		max-width: 88%;
-		font-size: 0.8rem;
+		max-width: calc(100% - 1.5rem);
+		font-size: 16px;
 		padding: 0.55rem 0.75rem;
 		bottom: 0.75rem;
 	}
 
 	.image-hint {
-		bottom: 3rem;
+		bottom: 3.25rem;
 	}
 }
 
-@media (max-width: 480px) {
+/* Phones in portrait — keep landscape (postcard) ratio, side-by-side back */
+@media (max-width: 480px) and (orientation: portrait) {
 	.App {
-		padding: 1rem 0.5rem 2rem;
+		padding: max(0.75rem, env(safe-area-inset-top))
+			max(0.5rem, env(safe-area-inset-right))
+			max(1.5rem, env(safe-area-inset-bottom))
+			max(0.5rem, env(safe-area-inset-left));
 	}
 
 	.header {
-		margin-bottom: 1.25rem;
+		margin-bottom: 0.85rem;
 	}
 
 	.title {
-		font-size: clamp(1.75rem, 9vw, 2.25rem);
+		font-size: clamp(1.6rem, 8vw, 2.1rem);
 	}
 
 	.subtitle {
-		font-size: 0.85rem;
+		font-size: 0.78rem;
 	}
 
+	/* True postcard ratio — landscape even on phones */
 	.flip-card {
-		aspect-ratio: 0.85 / 1;
+		aspect-ratio: 1.586 / 1;
 	}
 
 	.flip-card-back {
-		padding: 0.85rem 0.75rem;
+		padding: 0.6rem 0.7rem;
 	}
 
-	.btn {
-		padding: 0.65rem 1.1rem;
-		font-size: 0.85rem;
+	.back-content {
+		flex-direction: row;
+		gap: 0.65rem;
+	}
+
+	.left-section {
+		flex: 1.1;
+		min-width: 0;
+	}
+
+	.divider {
+		width: 1px;
+		height: auto;
+	}
+
+	.right-section {
+		flex: 1;
+		flex-direction: column;
+		gap: 0.25rem;
+		/* Reserve top space for the upper-right stamp */
+		padding-top: 78px;
+		padding-right: 0;
 	}
 
 	.stamp-container {
-		width: 80px;
-		height: 95px;
+		width: 64px;
+		height: 76px;
+	}
+
+	.message-label {
+		font-size: 0.95rem;
+		margin-bottom: 0.1rem;
+	}
+
+	.message-textarea,
+	.message-display {
+		font-size: 14px;
+		line-height: 1.4;
+		padding: 0.4rem 0.45rem;
+	}
+
+	.address-label {
+		display: none;
 	}
 
 	.address-input,
 	.address-display {
+		/* 16px to avoid iOS focus zoom */
+		font-size: 16px;
+		padding: 0.3rem 0.4rem;
+	}
+
+	.btn {
+		padding: 0.7rem 1.1rem;
+		font-size: 0.9rem;
+		min-height: 44px;
+	}
+
+	.btn-copy {
+		min-height: 44px;
+	}
+}
+
+/* Very narrow phones — stamp + address stack vertically next to message */
+@media (max-width: 380px) and (orientation: portrait) {
+	.flip-card {
+		aspect-ratio: 1.4 / 1;
+	}
+
+	.right-section {
+		padding-top: 70px;
+	}
+
+	.stamp-container {
+		width: 56px;
+		height: 66px;
+	}
+}
+
+/* Phones / tablets in landscape — short viewport height */
+@media (max-height: 560px) and (orientation: landscape) {
+	.App {
+		padding: max(0.4rem, env(safe-area-inset-top))
+			max(1rem, env(safe-area-inset-right))
+			max(0.75rem, env(safe-area-inset-bottom))
+			max(1rem, env(safe-area-inset-left));
+	}
+
+	.header {
+		margin-bottom: 0.5rem;
+	}
+
+	.title {
+		font-size: clamp(1.25rem, 4vw, 1.75rem);
+	}
+
+	.subtitle {
+		display: none;
+	}
+
+	.post-card-container {
+		max-width: min(840px, calc(100vh * 1.4));
+	}
+
+	.flip-card {
+		aspect-ratio: 1.586 / 1;
+		max-height: 70dvh;
+	}
+
+	.flip-card-back {
+		padding: 0.65rem 0.85rem;
+	}
+
+	.back-content {
+		flex-direction: row;
+		gap: 0.85rem;
+	}
+
+	.right-section {
+		flex-direction: column;
+		gap: 0.3rem;
+		padding-top: 88px;
+	}
+
+	.message-label {
+		font-size: 1rem;
+	}
+
+	.message-textarea,
+	.message-display {
 		font-size: 0.82rem;
-		padding: 0.35rem 0.25rem;
+		line-height: 1.45;
+		padding: 0.45rem 0.5rem;
+	}
+
+	.stamp-container {
+		width: 68px;
+		height: 80px;
+	}
+
+	.address-label {
+		display: none;
+	}
+
+	.address-input,
+	.address-display {
+		font-size: 16px;
+		padding: 0.3rem 0.4rem;
+	}
+
+	.actions {
+		margin-top: 0.85rem;
+		gap: 0.5rem;
+	}
+
+	.share-section {
+		padding: 0.65rem 0.85rem;
+	}
+
+	.share-label {
+		margin-bottom: 0.35rem;
+	}
+
+	.share-input-wrapper {
+		flex-direction: row;
+	}
+
+	.flip-hint {
+		margin-top: 0.5rem;
+		font-size: 0.72rem;
+	}
+
+	.tutorial-content {
+		max-height: 88dvh;
+		padding: 1.1rem 1.25rem;
+	}
+
+	.tutorial-text {
+		font-size: 0.92rem;
+		margin-bottom: 1rem;
+	}
+
+	.theme-toggle {
+		width: 34px;
+		height: 34px;
+		font-size: 0.95rem;
+	}
+}
+
+/* Reduced motion — cut animations & transforms */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
 	}
 }
 
