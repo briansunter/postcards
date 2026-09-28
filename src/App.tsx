@@ -376,14 +376,6 @@ function App() {
 				{theme === "light" ? "🌙" : "☀️"}
 			</button>
 
-			<header className="header">
-				<a href="./" className="title">
-					<span className="title-icon">✉</span>
-					PostcardPop
-				</a>
-				<p className="subtitle">Create & share beautiful digital postcards</p>
-			</header>
-
 			<div className="post-card-container">
 				<div
 					className="flip-card"
@@ -474,14 +466,13 @@ function App() {
 												className="stamp-map"
 												center={position}
 												zoom={9}
-												attributionControl={false}
 												zoomControl={false}
 												scrollWheelZoom={false}
 											>
 												<MapUpdater position={position} />
 												<TileLayer
 													url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-													attribution=""
+													attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
 												/>
 											</MapContainer>
 											{isGeocoding && (
