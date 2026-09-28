@@ -9,14 +9,43 @@
     <meta name="theme-color" content="#1a1814" media="(prefers-color-scheme: dark)" />
     <meta
       name="description"
-      content="Create & share beautiful digital postcards"
+      content="Make and share a digital postcard from a photo, a personal message, and a location. Create a card in your browser and share its link."
     />
-    <meta property="og:title" content="PostcardPop Card" />
+    <link rel="canonical" href="https://postcardpop.briansunter.com/" />
+    <meta property="og:title" content="PostcardPop | Digital Postcard Maker" />
     <meta
       property="og:description"
-      content="Create & share beautiful digital postcards"
+      content="Make and share a digital postcard from a photo, a personal message, and a location. Create a card in your browser and share its link."
     />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://postcardpop.briansunter.com/" />
+    <meta
+      property="og:image"
+      content="https://postcardpop.briansunter.com/android-chrome-512x512.png"
+    />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="PostcardPop envelope icon" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="PostcardPop | Digital Postcard Maker" />
+    <meta
+      name="twitter:description"
+      content="Make and share a digital postcard from a photo, a personal message, and a location. Create a card in your browser and share its link."
+    />
+    <meta
+      name="twitter:image"
+      content="https://postcardpop.briansunter.com/android-chrome-512x512.png"
+    />
+    <meta name="twitter:image:alt" content="PostcardPop envelope icon" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "PostcardPop",
+        "url": "https://postcardpop.briansunter.com/",
+        "description": "Make and share a digital postcard from a photo, a personal message, and a location."
+      }
+    </script>
     <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
     <link rel="manifest" href="./manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,12 +54,61 @@
       href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
-    <title>PostcardPop</title>
-    <script type="module" crossorigin src="./assets/index-6XkgTAjA.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-DjGpwsSd.css">
+    <title>PostcardPop | Digital Postcard Maker</title>
+    <script type="module" crossorigin src="./assets/index-V5BT1DxQ.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-B03USWVB.css">
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <header class="header site-header">
+      <a href="./" class="title">
+        <span class="title-icon" aria-hidden="true">✉</span>
+        PostcardPop
+      </a>
+      <h1 class="subtitle">Create and share a digital postcard</h1>
+      <p class="site-intro">
+        Choose a photo, write a personal message, add a location, and share the
+        finished card with a link.
+      </p>
+    </header>
+    <main id="root"></main>
+    <section class="seo-content" aria-labelledby="how-to-heading">
+      <h2 id="how-to-heading">How to make a digital postcard</h2>
+      <p>
+        PostcardPop is a browser-based digital postcard maker. Choose a photo by
+        pasting its image URL, then turn the card over to write a note. Add the
+        recipient and sender names and, if you like, enter a city or place for
+        the location stamp. PostcardPop creates a share link that the people you
+        send it to can open in a web browser.
+      </p>
+      <ol>
+        <li>
+          <strong>Choose a photo.</strong> Paste the image URL into the field on
+          the front of the card. The card preview updates with that image.
+        </li>
+        <li>
+          <strong>Write the back.</strong> Tap or click the card to turn it over.
+          Add your message, recipient, sender, and an optional location.
+        </li>
+        <li>
+          <strong>Copy and share.</strong> Use the Copy Link button, then send
+          that link through the email or messaging service you already use.
+        </li>
+      </ol>
+      <h2>A postcard that opens in a browser</h2>
+      <p>
+        PostcardPop prepares a digital card; it does not print a paper postcard
+        or send the link for you. Anyone with the link can open and read the
+        postcard because the link contains its details. Recipients can view the
+        photo and flip the card to read your note.
+      </p>
+      <p>
+        The location stamp uses map tiles from
+        <a href="https://www.openstreetmap.org/copyright">
+          OpenStreetMap contributors
+        </a>
+        .
+      </p>
+    </section>
   </body>
 </html>
