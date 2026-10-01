@@ -15,8 +15,10 @@ interface URLData {
 	isDefaultCard: boolean;
 }
 
-const defaultImage =
-	"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=75&auto=format";
+const defaultImage = new URL(`${import.meta.env.BASE_URL}images/alps-840.avif`, window.location.href).href;
+const defaultImageVariants = [400, 700, 840, 1680].map(
+	(width) => `${new URL(`${import.meta.env.BASE_URL}images/alps-${width}.avif`, window.location.href).href} ${width}w`,
+).join(", ");
 
 // Geocoding function using Nominatim
 async function geocodeAddress(
@@ -399,12 +401,7 @@ function App() {
 									src={state.frontImage}
 									srcSet={
 										state.frontImage === defaultImage
-											? [400, 700, 840, 1200, 1680]
-													.map(
-														(width) =>
-															`${defaultImage.replace("w=800", `w=${width}`)} ${width}w`,
-													)
-													.join(", ")
+											? defaultImageVariants
 											: undefined
 									}
 									sizes="(min-width: 900px) 840px, calc(100vw - 18px)"
